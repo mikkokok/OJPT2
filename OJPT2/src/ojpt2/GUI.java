@@ -4,6 +4,8 @@
 package ojpt2;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.*;
 
 import javax.swing.JButton;
@@ -35,7 +37,8 @@ public class GUI extends JFrame {
 	private JButton buttonextrab;
 	private JButton buttonextrac;
 	private GridLayout manager = new GridLayout(5,3);
-
+	private boolean oorx = true; // True aloitetaan O:lla
+	private int buttoncount = 0;
 
 	public GUI () {
 		window = new JFrame("Ristinolla");
@@ -52,6 +55,7 @@ public class GUI extends JFrame {
 		window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		manager.setHgap(5);
 		manager.setVgap(5);
+		
 		
 		// Hoida nappulat
 		ButtonInit();
@@ -92,7 +96,74 @@ public class GUI extends JFrame {
 		window.add(buttonextrac);
 		
 		// Luodaan nappuloille kuuntelijat
-
+		buttonaa.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonaa);
+	        	  buttonaa.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonab.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonab);
+	        	  buttonab.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonac.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonac);
+	        	  buttonac.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonba.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonba);
+	        	  buttonba.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonbb.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonbb);
+	        	  buttonbb.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonbc.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonbc);
+	        	  buttonbc.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonca.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttonca);
+	        	  buttonca.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttoncb.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttoncb);
+	        	  buttoncb.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttoncc.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  ChangeButton(buttoncc);
+	        	  buttoncc.setEnabled(false);
+	        	  buttoncount++;
+	          }          
+	       });
+		buttonextrac.addActionListener(new ActionListener() {
+	          public void actionPerformed(ActionEvent e) {
+	        	  EnableButtons();
+	          }          
+	       });
 	}
 	private void TextAreaInit() {
 		textarea = new TextArea();
@@ -110,6 +181,30 @@ public class GUI extends JFrame {
 	}
 	public static void UpdateTextAreab(String text) {
 		textareab.append(text + "\n");
+	}
+	private void ChangeButton(JButton button) {
+		if (oorx) {
+			button.setText("O");
+			oorx = false;
+		}else {
+			button.setText("X");
+			oorx = true;
+		}
+	}
+	private void EnableButtons() {
+		buttonaa.setEnabled(true);
+		buttonab.setEnabled(true);
+		buttonac.setEnabled(true);
+		buttonba.setEnabled(true);
+		buttonbb.setEnabled(true);
+		buttonbc.setEnabled(true);
+		buttonca.setEnabled(true);
+		buttoncb.setEnabled(true);
+		buttoncc.setEnabled(true);
+		buttoncount = 0;
+	}
+	private void CheckWin() {
+		
 	}
 
 	
