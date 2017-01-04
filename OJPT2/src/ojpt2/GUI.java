@@ -102,6 +102,7 @@ public class GUI extends JFrame {
 		buttonaa.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonaa);
+	        	  game.placemark(0, 0, whichmark());
 	        	  buttonaa.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -109,6 +110,7 @@ public class GUI extends JFrame {
 		buttonab.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonab);
+	        	  game.placemark(0, 1, whichmark());
 	        	  buttonab.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -116,6 +118,7 @@ public class GUI extends JFrame {
 		buttonac.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonac);
+	        	  game.placemark(0, 2, whichmark());
 	        	  buttonac.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -123,6 +126,7 @@ public class GUI extends JFrame {
 		buttonba.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonba);
+	        	  game.placemark(1, 0, whichmark());
 	        	  buttonba.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -130,6 +134,7 @@ public class GUI extends JFrame {
 		buttonbb.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonbb);
+	        	  game.placemark(1, 1, whichmark());
 	        	  buttonbb.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -137,6 +142,7 @@ public class GUI extends JFrame {
 		buttonbc.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonbc);
+	        	  game.placemark(1, 2, whichmark());
 	        	  buttonbc.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -144,6 +150,7 @@ public class GUI extends JFrame {
 		buttonca.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttonca);
+	        	  game.placemark(2, 0, whichmark());
 	        	  buttonca.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -151,6 +158,7 @@ public class GUI extends JFrame {
 		buttoncb.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttoncb);
+	        	  game.placemark(2, 1, whichmark());
 	        	  buttoncb.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -158,6 +166,7 @@ public class GUI extends JFrame {
 		buttoncc.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  ChangeButton(buttoncc);
+	        	  game.placemark(2, 2, whichmark());
 	        	  buttoncc.setEnabled(false);
 	        	  buttoncount++;
 	          }          
@@ -186,6 +195,7 @@ public class GUI extends JFrame {
 		textareab.append(text + "\n");
 	}
 	private void ChangeButton(JButton button) {
+		CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen jälkeen
 		if (oorx) {
 			button.setText("O");
 			oorx = false;
@@ -193,7 +203,7 @@ public class GUI extends JFrame {
 			button.setText("X");
 			oorx = true;
 		}
-		CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen jälkeen
+		
 	}
 	private void EnableButtons() {
 		buttonaa.setEnabled(true);
@@ -215,6 +225,7 @@ public class GUI extends JFrame {
 		buttoncb.setText("8");
 		buttoncc.setText("9");
 		this.oorx = true; // O Aloittaa aina pelin
+		game.resetgame();
 		buttoncount = 0;
 	}
 	private void DisableButtons() {
@@ -240,6 +251,13 @@ public class GUI extends JFrame {
 				UpdateTextArea("O voitti "+this.gamenumber+". pelin");
 				this.gamenumber++;
 			}
+		}
+	}
+	private String whichmark() {
+		if (oorx) {
+			return "O";
+		} else {
+			return "X";
 		}
 	}
 
