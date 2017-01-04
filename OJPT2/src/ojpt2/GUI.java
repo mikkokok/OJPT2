@@ -39,6 +39,8 @@ public class GUI extends JFrame {
 	private GridLayout manager = new GridLayout(5,3);
 	private boolean oorx = true; // True aloitetaan O:lla
 	private int buttoncount = 0;
+	private TicTacToeLogic game;
+	private int gamenumber = 1;
 
 	public GUI () {
 		window = new JFrame("Ristinolla");
@@ -62,9 +64,10 @@ public class GUI extends JFrame {
 		// Tekstilaatikko
 		TextAreaInit();
 
-		
-		
-		UpdateTextArea("Game initialized");
+		// Luodaan peli
+		game = new TicTacToeLogic();
+		UpdateTextArea("Peli alustettu");
+		UpdateTextArea("----------------------");
 	}
 	private void ButtonInit() {
 		// Luodaan nappulat ristinollaa varten
@@ -77,9 +80,9 @@ public class GUI extends JFrame {
 		buttonca = new JButton("7");
 		buttoncb = new JButton("8");
 		buttoncc = new JButton("9");
-		buttonextraa = new JButton("Extraa");
+		buttonextraa = new JButton("Start");
 		buttonextrab = new JButton("Extrab");
-		buttonextrac = new JButton("Extrac");
+		buttonextrac = new JButton("Reset");
 		
 		// Nappulat ikkunan sisälle
 		window.add(buttonaa);
@@ -190,6 +193,7 @@ public class GUI extends JFrame {
 			button.setText("X");
 			oorx = true;
 		}
+		CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen jälkeen
 	}
 	private void EnableButtons() {
 		buttonaa.setEnabled(true);
@@ -201,10 +205,42 @@ public class GUI extends JFrame {
 		buttonca.setEnabled(true);
 		buttoncb.setEnabled(true);
 		buttoncc.setEnabled(true);
+		buttonaa.setText("1");
+		buttonab.setText("2");
+		buttonac.setText("3");
+		buttonba.setText("4");
+		buttonbb.setText("5");
+		buttonbc.setText("6");
+		buttonca.setText("7");
+		buttoncb.setText("8");
+		buttoncc.setText("9");
+		this.oorx = true; // O Aloittaa aina pelin
+		buttoncount = 0;
+	}
+	private void DisableButtons() {
+		buttonaa.setEnabled(false);
+		buttonab.setEnabled(false);
+		buttonac.setEnabled(false);
+		buttonba.setEnabled(false);
+		buttonbb.setEnabled(false);
+		buttonbc.setEnabled(false);
+		buttonca.setEnabled(false);
+		buttoncb.setEnabled(false);
+		buttoncc.setEnabled(false);
 		buttoncount = 0;
 	}
 	private void CheckWin() {
-		
+		if (game.isWin()[0].equalsIgnoreCase("YES")) { // Peli on voitettu
+			if (game.isWin()[1].equalsIgnoreCase("X")) { // X on voittanut
+				this.DisableButtons();
+				UpdateTextArea("X voitti "+this.gamenumber+". pelin");
+				this.gamenumber++;
+			} else { // O on voittanut
+				this.DisableButtons();
+				UpdateTextArea("O voitti "+this.gamenumber+". pelin");
+				this.gamenumber++;
+			}
+		}
 	}
 
 	
