@@ -11,15 +11,12 @@ public class TicTacToeLogic {
 
 	private String[][] game;
 	private boolean xoro = true; // True jos O, false jos X
+	private boolean debug = false; 
 	public TicTacToeLogic() {
 		game = new String[3][3]; // 3x3 peli
 		// Täytä taulukko
 		resetgame();
 	} // Konstruktori
-
-	/**
-	 * 
-	 */
 	public void resetgame() {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -27,7 +24,6 @@ public class TicTacToeLogic {
 			}
 		}
 	}
-
 	public void placemark(int row, int column, String xo) {
 		game[row][column] = xo;
 	} // placemark
@@ -38,14 +34,20 @@ public class TicTacToeLogic {
 		if (checkrows("X") || checkcolumns("X") || checkcornertocorner("X")) {
 			winning[0] = "YES";
 			winning[1] = "X";
-			//GUI.UpdateTextAreab("X voitti");
-			printgame();
+			if (debug) {
+				GUI.UpdateTextAreab("X voitti");
+				printgame();
+			}
+
 		} 
 		if (checkrows("O") || checkcolumns("O") || checkcornertocorner("O")) {
 			winning[0] = "YES";
 			winning[1] = "O";
-			//GUI.UpdateTextAreab("O voitti"); 
-			printgame();
+			if (debug) {
+				GUI.UpdateTextAreab("O voitti"); 
+				printgame();	
+			}
+
 		}
 		return winning;
 	}

@@ -41,7 +41,7 @@ public class GUI extends JFrame {
 	private int buttoncount = 0;
 	private TicTacToeLogic game;
 	private int gamenumber = 1;
-	private boolean debug = true; // debug rivit p‰‰lle/pois
+	private boolean debug = false; // debug rivit p‰‰lle/pois
 
 	public GUI () {
 		window = new JFrame("Ristinolla");
@@ -112,7 +112,7 @@ public class GUI extends JFrame {
 		});
 		buttonab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(0, 1, whichmark());
+				placexor(0, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 1 "+whichmark());
 				ChangeButton(buttonab);
@@ -122,7 +122,7 @@ public class GUI extends JFrame {
 		});
 		buttonac.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(0, 2, whichmark());
+				placexor(0, 2, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 2 "+whichmark());
 				ChangeButton(buttonac);
@@ -132,7 +132,7 @@ public class GUI extends JFrame {
 		});
 		buttonba.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(1, 0, whichmark());
+				placexor(1, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 0 "+whichmark());
 				ChangeButton(buttonba);
@@ -152,7 +152,7 @@ public class GUI extends JFrame {
 		});
 		buttonbc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(1, 2, whichmark());
+				placexor(1, 2, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 2 "+whichmark());
 				ChangeButton(buttonbc);
@@ -162,7 +162,7 @@ public class GUI extends JFrame {
 		});
 		buttonca.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(2, 0, whichmark());
+				placexor(2, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 2 0 "+whichmark());
 				ChangeButton(buttonca);
@@ -172,7 +172,7 @@ public class GUI extends JFrame {
 		});
 		buttoncb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(2, 1, whichmark());
+				placexor(2, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 2 1 "+whichmark());
 				ChangeButton(buttoncb);
@@ -182,7 +182,7 @@ public class GUI extends JFrame {
 		});
 		buttoncc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.placemark(2, 2, whichmark());
+				placexor(2, 2, whichmark());
 				ChangeButton(buttoncc);
 				buttoncc.setEnabled(false);
 				buttoncount++;
@@ -191,6 +191,7 @@ public class GUI extends JFrame {
 		buttonextrac.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				EnableButtons();
+				ResetGUI();
 			}          
 		});
 	}
@@ -211,6 +212,9 @@ public class GUI extends JFrame {
 	public static void UpdateTextAreab(String text) {
 		textareab.append(text + "\n");
 	}
+	public  void placexor(int row, int column, String xo) {
+		this.game.placemark(row, column, xo);
+	}
 	private void ChangeButton(JButton button) {
 		CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen j‰lkeen
 		if (oorx) {
@@ -220,7 +224,6 @@ public class GUI extends JFrame {
 			button.setText("X");
 			oorx = true;
 		}
-
 	}
 	private void EnableButtons() {
 		buttonaa.setEnabled(true);
@@ -232,18 +235,6 @@ public class GUI extends JFrame {
 		buttonca.setEnabled(true);
 		buttoncb.setEnabled(true);
 		buttoncc.setEnabled(true);
-		buttonaa.setText("1");
-		buttonab.setText("2");
-		buttonac.setText("3");
-		buttonba.setText("4");
-		buttonbb.setText("5");
-		buttonbc.setText("6");
-		buttonca.setText("7");
-		buttoncb.setText("8");
-		buttoncc.setText("9");
-		this.oorx = true; // O Aloittaa aina pelin
-		game.resetgame();
-		buttoncount = 0;
 	}
 	private void DisableButtons() {
 		buttonaa.setEnabled(false);
@@ -255,6 +246,19 @@ public class GUI extends JFrame {
 		buttonca.setEnabled(false);
 		buttoncb.setEnabled(false);
 		buttoncc.setEnabled(false);
+	}
+	private void ResetGUI() {
+		buttonaa.setText("1");
+		buttonab.setText("2");
+		buttonac.setText("3");
+		buttonba.setText("4");
+		buttonbb.setText("5");
+		buttonbc.setText("6");
+		buttonca.setText("7");
+		buttoncb.setText("8");
+		buttoncc.setText("9");
+		this.oorx = true; // O Aloittaa aina pelin
+		game.resetgame();
 		buttoncount = 0;
 	}
 	private void CheckWin() {
