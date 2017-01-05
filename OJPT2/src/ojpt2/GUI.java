@@ -41,10 +41,11 @@ public class GUI extends JFrame {
 	private int buttoncount = 0;
 	private TicTacToeLogic game;
 	private int gamenumber = 1;
+	private boolean debug = true; // debug rivit p‰‰lle/pois
 
 	public GUI () {
 		window = new JFrame("Ristinolla");
-		
+
 		// M‰‰ritell‰‰n ikkuna
 		window.setSize(900,900);
 		window.setBackground(Color.BLUE);
@@ -57,8 +58,8 @@ public class GUI extends JFrame {
 		window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		manager.setHgap(5);
 		manager.setVgap(5);
-		
-		
+
+
 		// Hoida nappulat
 		ButtonInit();
 		// Tekstilaatikko
@@ -83,7 +84,7 @@ public class GUI extends JFrame {
 		buttonextraa = new JButton("Start");
 		buttonextrab = new JButton("Extrab");
 		buttonextrac = new JButton("Reset");
-		
+
 		// Nappulat ikkunan sis‰lle
 		window.add(buttonaa);
 		window.add(buttonab);
@@ -97,85 +98,101 @@ public class GUI extends JFrame {
 		window.add(buttonextraa);
 		window.add(buttonextrab);
 		window.add(buttonextrac);
-		
+
 		// Luodaan nappuloille kuuntelijat
 		buttonaa.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonaa);
-	        	  game.placemark(0, 0, whichmark());
-	        	  buttonaa.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(0, 0, whichmark());
+				if (debug)
+					System.out.println("Paikka 0 0 "+whichmark());
+				ChangeButton(buttonaa);
+				buttonaa.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonab.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonab);
-	        	  game.placemark(0, 1, whichmark());
-	        	  buttonab.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(0, 1, whichmark());
+				if (debug)
+					System.out.println("Paikka 0 1 "+whichmark());
+				ChangeButton(buttonab);
+				buttonab.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonac.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonac);
-	        	  game.placemark(0, 2, whichmark());
-	        	  buttonac.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(0, 2, whichmark());
+				if (debug)
+					System.out.println("Paikka 0 2 "+whichmark());
+				ChangeButton(buttonac);
+				buttonac.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonba.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonba);
-	        	  game.placemark(1, 0, whichmark());
-	        	  buttonba.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(1, 0, whichmark());
+				if (debug)
+					System.out.println("Paikka 1 0 "+whichmark());
+				ChangeButton(buttonba);
+				buttonba.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonbb.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonbb);
-	        	  game.placemark(1, 1, whichmark());
-	        	  buttonbb.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(1, 1, whichmark());
+				if (debug)
+					System.out.println("Paikka 1 1 "+whichmark());
+				ChangeButton(buttonbb);
+				buttonbb.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonbc.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonbc);
-	        	  game.placemark(1, 2, whichmark());
-	        	  buttonbc.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(1, 2, whichmark());
+				if (debug)
+					System.out.println("Paikka 1 2 "+whichmark());
+				ChangeButton(buttonbc);
+				buttonbc.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonca.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttonca);
-	        	  game.placemark(2, 0, whichmark());
-	        	  buttonca.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(2, 0, whichmark());
+				if (debug)
+					System.out.println("Paikka 2 0 "+whichmark());
+				ChangeButton(buttonca);
+				buttonca.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttoncb.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttoncb);
-	        	  game.placemark(2, 1, whichmark());
-	        	  buttoncb.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(2, 1, whichmark());
+				if (debug)
+					System.out.println("Paikka 2 1 "+whichmark());
+				ChangeButton(buttoncb);
+				buttoncb.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttoncc.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  ChangeButton(buttoncc);
-	        	  game.placemark(2, 2, whichmark());
-	        	  buttoncc.setEnabled(false);
-	        	  buttoncount++;
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				game.placemark(2, 2, whichmark());
+				ChangeButton(buttoncc);
+				buttoncc.setEnabled(false);
+				buttoncount++;
+			}          
+		});
 		buttonextrac.addActionListener(new ActionListener() {
-	          public void actionPerformed(ActionEvent e) {
-	        	  EnableButtons();
-	          }          
-	       });
+			public void actionPerformed(ActionEvent e) {
+				EnableButtons();
+			}          
+		});
 	}
 	private void TextAreaInit() {
 		textarea = new TextArea();
@@ -186,7 +203,7 @@ public class GUI extends JFrame {
 		window.add(textarea, BorderLayout.PAGE_END);
 		window.add(textareab, BorderLayout.PAGE_END);
 		window.add(textareac, BorderLayout.PAGE_END);
-		
+
 	}
 	public static void UpdateTextArea(String text) {
 		textarea.append(text + "\n");
@@ -203,7 +220,7 @@ public class GUI extends JFrame {
 			button.setText("X");
 			oorx = true;
 		}
-		
+
 	}
 	private void EnableButtons() {
 		buttonaa.setEnabled(true);
@@ -261,5 +278,5 @@ public class GUI extends JFrame {
 		}
 	}
 
-	
+
 }

@@ -23,7 +23,7 @@ public class TicTacToeLogic {
 	public void resetgame() {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				game[i][j] = "-1";
+				game[i][j] = "M";
 			}
 		}
 	}
@@ -38,13 +38,13 @@ public class TicTacToeLogic {
 		if (checkrows("X") || checkcolumns("X") || checkcornertocorner("X")) {
 			winning[0] = "YES";
 			winning[1] = "X";
-			GUI.UpdateTextAreab("X voitti");
+			//GUI.UpdateTextAreab("X voitti");
 			printgame();
 		} 
 		if (checkrows("O") || checkcolumns("O") || checkcornertocorner("O")) {
 			winning[0] = "YES";
 			winning[1] = "O";
-			GUI.UpdateTextAreab("O voitti"); 
+			//GUI.UpdateTextAreab("O voitti"); 
 			printgame();
 		}
 		return winning;
@@ -89,8 +89,9 @@ public class TicTacToeLogic {
 		for (int i = 0; i < 3; i++) {
 			System.out.println("");
 			for (int j = 0; j < 3; j++) {
-				System.out.print(game[i][j]);
+				System.out.print(game[i][j]+" ");
 			}
 		}
+		System.out.println("");
 	}
 } // TicTacToeLogic 
