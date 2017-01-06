@@ -15,15 +15,11 @@ import javax.swing.JFrame;
  * @author Mikko Kokkonen
  *
  */
-public class GUI extends JFrame {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2778128863022518259L;
+public class GUI extends Thread {
 	private JFrame window;
-	private static TextArea textarea;
-	private static TextArea textareab;
-	private static TextArea textareac;
+	private TextArea textarea;
+	private TextArea textareab;
+	private TextArea textareac;
 	private JButton buttonaa; // vasemmalla ylh‰‰ll‰
 	private JButton buttonab; // keskell‰ Ylh‰‰ll‰ 
 	private JButton buttonac; // oikealla ylh‰‰ll‰ 
@@ -41,34 +37,13 @@ public class GUI extends JFrame {
 	private int buttoncount = 0;
 	private TicTacToeLogic game;
 	private int gamenumber = 1;
-	private boolean debug = false; // debug rivit p‰‰lle/pois
+	private boolean debug = true; // debug rivit p‰‰lle/pois
+	private boolean isRunning = true;
+	private boolean empty = false;
 
 	public GUI () {
-		window = new JFrame("Ristinolla");
-
-		// M‰‰ritell‰‰n ikkuna
-		window.setSize(900,900);
-		window.setBackground(Color.BLUE);
-		window.setTitle("Ristinolla");
-		window.setLocationRelativeTo(null);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setVisible(true);
-		window.setResizable(false);
-		window.setLayout(manager);
-		window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		manager.setHgap(5);
-		manager.setVgap(5);
-
-
-		// Hoida nappulat
-		ButtonInit();
-		// Tekstilaatikko
-		TextAreaInit();
-
-		// Luodaan peli
-		game = new TicTacToeLogic();
-		UpdateTextArea("Peli alustettu");
-		UpdateTextArea("----------------------");
+		Thread tredi = this;
+		tredi.start();
 	}
 	private void ButtonInit() {
 		// Luodaan nappulat ristinollaa varten
@@ -81,8 +56,8 @@ public class GUI extends JFrame {
 		buttonca = new JButton("7");
 		buttoncb = new JButton("8");
 		buttoncc = new JButton("9");
-		buttonextraa = new JButton("Start");
-		buttonextrab = new JButton("Extrab");
+		buttonextraa = new JButton("Stop");
+		buttonextrab = new JButton("");
 		buttonextrac = new JButton("Reset");
 
 		// Nappulat ikkunan sis‰lle
@@ -194,6 +169,15 @@ public class GUI extends JFrame {
 				ResetGUI();
 			}          
 		});
+		buttonextraa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//isRunning = false;
+				if (debug)
+					System.err.println("Stopping GUI");
+				System.exit(1);
+
+			}          
+		});
 	}
 	private void TextAreaInit() {
 		textarea = new TextArea();
@@ -204,19 +188,18 @@ public class GUI extends JFrame {
 		window.add(textarea, BorderLayout.PAGE_END);
 		window.add(textareab, BorderLayout.PAGE_END);
 		window.add(textareac, BorderLayout.PAGE_END);
-
 	}
-	public static void UpdateTextArea(String text) {
+	public void UpdateTextArea(String text) {
 		textarea.append(text + "\n");
 	}
-	public static void UpdateTextAreab(String text) {
+	public void UpdateTextAreab(String text) {
 		textareab.append(text + "\n");
 	}
-	public  void placexor(int row, int column, String xo) {
+	public void placexor(int row, int column, String xo) {
 		this.game.placemark(row, column, xo);
 	}
 	private void ChangeButton(JButton button) {
-		CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen j‰lkeen
+		this.CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen j‰lkeen
 		if (oorx) {
 			button.setText("O");
 			oorx = false;
@@ -258,18 +241,18 @@ public class GUI extends JFrame {
 		buttoncb.setText("8");
 		buttoncc.setText("9");
 		this.oorx = true; // O Aloittaa aina pelin
-		game.resetgame();
+		this.game.resetgame();
 		buttoncount = 0;
 	}
 	private void CheckWin() {
-		if (game.isWin()[0].equalsIgnoreCase("YES")) { // Peli on voitettu
-			if (game.isWin()[1].equalsIgnoreCase("X")) { // X on voittanut
+		if (this.game.isWin()[0].equalsIgnoreCase("YES")) { // Peli on voitettu
+			if (this.game.isWin()[1].equalsIgnoreCase("X")) { // X on voittanut
 				this.DisableButtons();
-				UpdateTextArea("X voitti "+this.gamenumber+". pelin");
+				this.UpdateTextArea("X voitti "+this.gamenumber+". pelin");
 				this.gamenumber++;
 			} else { // O on voittanut
 				this.DisableButtons();
-				UpdateTextArea("O voitti "+this.gamenumber+". pelin");
+				this.UpdateTextArea("O voitti "+this.gamenumber+". pelin");
 				this.gamenumber++;
 			}
 		}
@@ -281,6 +264,30 @@ public class GUI extends JFrame {
 			return "X";
 		}
 	}
+	public void run() {
+		this.window = new JFrame("Ristinolla");
 
+		// M‰‰ritell‰‰n ikkuna
+		this.window.setSize(900,900);
+		this.window.setBackground(Color.BLUE);
+		this.window.setTitle("Ristinolla");
+		this.window.setLocationRelativeTo(null);
+		this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		this.window.setVisible(true);
+		this.window.setResizable(false);
+		this.window.setLayout(manager);
+		this.window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		this.manager.setHgap(5);
+		this.manager.setVgap(5);
 
+		// Hoida nappulat
+		this.ButtonInit();
+		// Tekstilaatikko
+		this.TextAreaInit();
+
+		// Luodaan peli
+		this.game = new TicTacToeLogic();
+		this.UpdateTextArea("Peli alustettu");
+		this.UpdateTextArea("----------------------");
+	}
 }

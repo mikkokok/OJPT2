@@ -35,7 +35,6 @@ public class TicTacToeLogic {
 			winning[0] = "YES";
 			winning[1] = "X";
 			if (debug) {
-				GUI.UpdateTextAreab("X voitti");
 				printgame();
 			}
 
@@ -44,7 +43,6 @@ public class TicTacToeLogic {
 			winning[0] = "YES";
 			winning[1] = "O";
 			if (debug) {
-				GUI.UpdateTextAreab("O voitti"); 
 				printgame();	
 			}
 
