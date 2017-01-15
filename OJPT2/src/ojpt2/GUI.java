@@ -6,10 +6,15 @@ package ojpt2;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.awt.*;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
+import ojpt2.server.TicTacToeLogic;
 
 /**
  * @author Mikko Kokkonen
@@ -40,6 +45,8 @@ public class GUI extends Thread {
 	private boolean debug = true; // debug rivit p‰‰lle/pois
 	private boolean isRunning = true;
 	private boolean empty = false;
+	
+	private static LinkedList<GUI> pelit = new LinkedList<GUI>();
 
 	public GUI () {
 		Thread tredi = this;
@@ -286,8 +293,20 @@ public class GUI extends Thread {
 		this.TextAreaInit();
 
 		// Luodaan peli
-		this.game = new TicTacToeLogic();
+		try {
+			this.game = new TicTacToeLogic();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		this.UpdateTextArea("Peli alustettu");
 		this.UpdateTextArea("----------------------");
+	}
+	
+
+	public static void main(String[] args) {
+
+		pelit.add(new GUI());
 	}
 }

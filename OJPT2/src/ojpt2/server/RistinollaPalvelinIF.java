@@ -2,13 +2,15 @@ package ojpt2.server;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import ojpt2.Pelaaja;
 
 public interface RistinollaPalvelinIF extends Remote {
-	void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException;
+	void liityPeliin(Pelaaja pelaaja, String peliID) throws RemoteException;
 	void aloitaPeli() throws RemoteException;
-	void lopetaPeli() throws RemoteException;
-	void setVuoro() throws RemoteException;
-	void getTila() throws RemoteException;
-	void resetPeli() throws RemoteException;
-	void maaritaVoittaja() throws RemoteException;
+	void poistaPelaaja(Pelaaja pelaaja, String peliID) throws RemoteException;
+	ArrayList<String> getKaikkiPelaajat() throws RemoteException;
+	ArrayList<String> lopetaPeli(String idGame) throws RemoteException;
+	void resetPeli(TicTacToeLogic peli) throws RemoteException;
 }

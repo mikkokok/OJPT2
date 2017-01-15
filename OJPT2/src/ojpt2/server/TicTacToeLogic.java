@@ -1,21 +1,43 @@
 /**
  * 
  */
-package ojpt2;
+package ojpt2.server;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import ojpt2.Pelaaja;
 
 /**
  * @author Mikko Kokkonen
  *
  */
-public class TicTacToeLogic {
+public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 
+	private static final long serialVersionUID = 1L;
 	private String[][] game;
 	private boolean xoro = true; // True jos O, false jos X
 	private boolean debug = false; 
-	public TicTacToeLogic() {
+	
+	private Pelaaja pelaaja1;
+	private Pelaaja pelaaja2;
+	private String peliID;
+	private boolean peliOhi;
+	public static PelinTila pelinTila;
+	
+	
+	public TicTacToeLogic() throws RemoteException {
+		super();
 		game = new String[3][3]; // 3x3 peli
 		// Täytä taulukko
 		resetgame();
+		
+		pelaaja1 = null;
+		pelaaja2 = null;
+		
+		peliOhi = false;
+		pelinTila = PelinTila.EI_PELAAJIA;
+		
 	} // Konstruktori
 	public void resetgame() {
 		for (int i = 0; i < 3; i++) {
@@ -93,5 +115,41 @@ public class TicTacToeLogic {
 			}
 		}
 		System.out.println("");
+	}
+	@Override
+	public String getPeliID() throws RemoteException {
+		return peliID;
+		
+	}
+	
+	@Override
+	public void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException {
+		if(pelaaja1 == null){
+			pelaaja1 = pelaaja;
+			pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
+		}
+		else if(pelaaja2 == null){
+			pelaaja2 = pelaaja;
+			pelinTila = PelinTila.PELIN_ALOITUS;
+		}
+		else{
+			System.out.println("Peli on jo täynnä");
+		}
+	}
+
+	@Override
+	public void siirtoTehty(Pelaaja pelaaja) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void maaritaVoittaja() throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean peliOhi() throws RemoteException {
+		return peliOhi;
 	}
 } // TicTacToeLogic 

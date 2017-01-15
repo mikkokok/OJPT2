@@ -2,66 +2,56 @@ package ojpt2.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import ojpt2.Pelaaja;
 
 public class RistinollaPalvelin extends UnicastRemoteObject implements RistinollaPalvelinIF{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Pelaaja pelaaja1;
-	private Pelaaja pelaaja2;
-
+	private Map<String, TicTacToeLogic> pelit;
+	private Map<String, Pelaaja> pelaajat;
+	
 	protected RistinollaPalvelin() throws RemoteException {
 		super();
-		pelaaja1 = null;
-		pelaaja2 = null;
-		
-	}
-
-	@Override
-	public void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException {
-		if(pelaaja1 == null){
-			pelaaja1 = pelaaja;
-		}
-		else if(pelaaja2 == null){
-			pelaaja2 = pelaaja;
-		}
-		
+		pelit = new HashMap<String,  TicTacToeLogic>();
+		pelaajat = new HashMap<String, Pelaaja>();
 	}
 
 	@Override
 	public void aloitaPeli() throws RemoteException {
+		TicTacToeLogic peli = new  TicTacToeLogic();	
+	}
+
+	@Override
+	public void resetPeli(TicTacToeLogic peli) throws RemoteException {
+		peli.resetgame();	
+	}
+
+	@Override
+	public void poistaPelaaja(Pelaaja pelaaja, String peliID) throws RemoteException {
+		pelit.remove(peliID, pelaaja);
+		
+	}
+
+	@Override
+	public void liityPeliin(Pelaaja pelaaja, String peliID) throws RemoteException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void lopetaPeli() throws RemoteException {
+	public ArrayList<String> getKaikkiPelaajat() throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void setVuoro() throws RemoteException {
+	public ArrayList<String> lopetaPeli(String idGame) throws RemoteException {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
-
-	@Override
-	public void getTila() throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resetPeli() throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void maaritaVoittaja() throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
