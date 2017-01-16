@@ -19,9 +19,9 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 	private boolean xoro = true; // True jos O, false jos X
 	private boolean debug = false; 
 	
+	private int peliID;
 	private Pelaaja pelaaja1;
 	private Pelaaja pelaaja2;
-	private String peliID;
 	private boolean peliOhi;
 	public static PelinTila pelinTila;
 	
@@ -31,7 +31,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 		game = new String[3][3]; // 3x3 peli
 		// Täytä taulukko
 		resetgame();
-		
+	
 		pelaaja1 = null;
 		pelaaja2 = null;
 		
@@ -116,11 +116,6 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 		}
 		System.out.println("");
 	}
-	@Override
-	public String getPeliID() throws RemoteException {
-		return peliID;
-		
-	}
 	
 	@Override
 	public void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException {
@@ -139,17 +134,16 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 
 	@Override
 	public void siirtoTehty(Pelaaja pelaaja) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		pelaaja.paataVuoro();
 	}
 
 	@Override
 	public void maaritaVoittaja() throws RemoteException {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public boolean peliOhi() throws RemoteException {
-		return peliOhi;
+	public void poistaPelaaja(Pelaaja pelaaja) throws RemoteException {
+		pelaaja.poistu();
+		
 	}
 } // TicTacToeLogic 

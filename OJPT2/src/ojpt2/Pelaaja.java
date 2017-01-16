@@ -15,41 +15,48 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 	private static final long serialVersionUID = 1L;
 	
 	private TicTacToeLogic peli;
-	private String nimi;
+	private GUI gui;
 	private boolean pelaakoViela;
+	private int voitot = 0;
+	
+	private enum VuoroTilanne{
+		VUOROJA_EI_JAETTU,
+		MUN_VUORO,
+		VASTUSTAJAN_VUORO
+	}
+	
+	private VuoroTilanne vuoroTilanne;
 
-	protected Pelaaja(TicTacToeLogic peli, String nimi) throws RemoteException {
+	protected Pelaaja(TicTacToeLogic peli) throws RemoteException {
 		super();
-		this.peli = peli;
-		this.nimi = nimi;
+		this.peli = peli;	
+		gui = new GUI();
 		pelaakoViela = true;
+		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
 	}
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		// TODO Auto-generated method stub
-		/*if (args.length < 2) {
-			System.out.println("Anna pelaajan nimi");
-			System.exit(0);
-		}
-		String pelaajaNimi = args[1].trim();
-		
-		RistinollaPalvelin peli = (RistinollaPalvelin) Naming.lookup("rmi://localhost/RistinollaPalvelin");*/
+		// TODO Auto-generated method stub			
+		RistinollaPalvelin peli = (RistinollaPalvelin) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
+		peli.aloitaPeli();
 
-	}
-
-	@Override
-	public String getNimi() throws RemoteException {
-		return nimi;
 	}
 	
 	@Override
 	public void otaVuoro() throws RemoteException {
-		TicTacToeLogic.pelinTila = PelinTila.VUORO_KAYNNISSA;
+		vuoroTilanne = VuoroTilanne.MUN_VUORO;
+		gui.EnableButtons();
 	}
 	
 	@Override
 	public void paataVuoro() throws RemoteException {
-		TicTacToeLogic.pelinTila = PelinTila.VUORO_LOPPU;
+		vuoroTilanne = VuoroTilanne.VASTUSTAJAN_VUORO;
+		gui.DisableButtons();
+	}
+	
+	@Override
+	public void voitto() throws RemoteException {
+		voitot += 1;
 	}
 
 	@Override

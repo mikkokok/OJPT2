@@ -11,47 +11,54 @@ import ojpt2.Pelaaja;
 public class RistinollaPalvelin extends UnicastRemoteObject implements RistinollaPalvelinIF{
 
 	private static final long serialVersionUID = 1L;
-	
-	private Map<String, TicTacToeLogic> pelit;
-	private Map<String, Pelaaja> pelaajat;
+	private int peliID = 0;
+	private HashMap<Integer, TicTacToeLogic> kaikkiPelit;
 	
 	protected RistinollaPalvelin() throws RemoteException {
 		super();
-		pelit = new HashMap<String,  TicTacToeLogic>();
-		pelaajat = new HashMap<String, Pelaaja>();
+		kaikkiPelit = new HashMap<Integer, TicTacToeLogic>();
 	}
 
 	@Override
+	//Luodaan uusi peli ja lis‰t‰‰n listaan
 	public void aloitaPeli() throws RemoteException {
-		TicTacToeLogic peli = new  TicTacToeLogic();	
+		TicTacToeLogic peli = new  TicTacToeLogic();
+		kaikkiPelit.put(peliID, peli);
+		peliID += 1;
+	}
+
+	//Metodi joka palauttaa pelin annetun peliID:n mukaan
+	public TicTacToeLogic getPeli(int peliID) throws RemoteException {
+		
+		TicTacToeLogic peli = null;
+		
+		for (Map.Entry<Integer, TicTacToeLogic> entry : kaikkiPelit.entrySet()) {
+			int avain = entry.getKey();
+			
+			if(avain == peliID){
+				peli = entry.getValue();
+			}
+		}
+		return peli;
+	}
+	
+	@Override
+	//Metodi joka liitt‰‰ pelaajan viimeisimp‰‰n peliin
+	public void liityPeliin(Pelaaja pelaaja) throws RemoteException {
+		TicTacToeLogic peli = kaikkiPelit.get(kaikkiPelit.size());
+		peli.lisaaPelaaja(pelaaja);
 	}
 
 	@Override
-	public void resetPeli(TicTacToeLogic peli) throws RemoteException {
+	//Metodi joka resetoi asiakkaan k‰yttˆliittym‰n
+	public void resetGUI(TicTacToeLogic peli) throws RemoteException {
 		peli.resetgame();	
 	}
 
 	@Override
-	public void poistaPelaaja(Pelaaja pelaaja, String peliID) throws RemoteException {
-		pelit.remove(peliID, pelaaja);
-		
+	//Metodi joka poistaa pelaajan pelist‰
+	public void poistaPelaaja(TicTacToeLogic peli, Pelaaja pelaaja) throws RemoteException {
+		peli.poistaPelaaja(pelaaja);
 	}
 
-	@Override
-	public void liityPeliin(Pelaaja pelaaja, String peliID) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ArrayList<String> getKaikkiPelaajat() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ArrayList<String> lopetaPeli(String idGame) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

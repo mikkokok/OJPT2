@@ -215,7 +215,7 @@ public class GUI extends Thread {
 			oorx = true;
 		}
 	}
-	private void EnableButtons() {
+	public void EnableButtons() {
 		buttonaa.setEnabled(true);
 		buttonab.setEnabled(true);
 		buttonac.setEnabled(true);
@@ -226,7 +226,7 @@ public class GUI extends Thread {
 		buttoncb.setEnabled(true);
 		buttoncc.setEnabled(true);
 	}
-	private void DisableButtons() {
+	public void DisableButtons() {
 		buttonaa.setEnabled(false);
 		buttonab.setEnabled(false);
 		buttonac.setEnabled(false);
