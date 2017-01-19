@@ -2,9 +2,8 @@ package ojpt2.server;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
-import ojpt2.Pelaaja;
+import ojpt2.client.Pelaaja;
 
 public interface RistinollaPalvelinIF extends Remote {
 	void aloitaPeli() throws RemoteException;

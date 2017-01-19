@@ -1,4 +1,4 @@
-package ojpt2;
+package ojpt2.client;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

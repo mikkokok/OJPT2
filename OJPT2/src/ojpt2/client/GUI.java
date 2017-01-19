@@ -1,12 +1,11 @@
 /**
  * 
  */
-package ojpt2;
+package ojpt2.client;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.awt.*;
@@ -39,13 +38,12 @@ public class GUI extends Thread {
 	private JButton buttonextrac;
 	private GridLayout manager = new GridLayout(5,3);
 	private boolean oorx = true; // True aloitetaan O:lla
+	@SuppressWarnings("unused")
 	private int buttoncount = 0;
 	private TicTacToeLogic game;
 	private int gamenumber = 1;
 	private boolean debug = true; // debug rivit p‰‰lle/pois
-	private boolean isRunning = true;
-	private boolean empty = false;
-	
+		
 	private static LinkedList<GUI> pelit = new LinkedList<GUI>();
 
 	public GUI () {
