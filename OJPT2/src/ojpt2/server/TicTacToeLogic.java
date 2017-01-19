@@ -23,7 +23,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 	private Pelaaja pelaaja1;
 	private Pelaaja pelaaja2;
 	private boolean peliOhi;
-	public static PelinTila pelinTila;
+	public  PelinTila pelinTila;
 	
 	
 	public TicTacToeLogic() throws RemoteException {
@@ -128,7 +128,8 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 			pelinTila = PelinTila.PELIN_ALOITUS;
 		}
 		else{
-			System.out.println("Peli on jo täynnä");
+			//Debuggausta varten, ei pitäisi koskaan tulostaa tätä
+			System.out.println("Peli on jo täynnä. Ohjeistetaan palvelinta luomaan uusi pelihuone");
 		}
 	}
 
@@ -146,4 +147,14 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 		pelaaja.poistu();
 		
 	}
+	
+	public int getPelaajienMaara(){
+		if(pelaaja1 == null)
+			return 0;
+		else if(pelaaja2 == null)
+			return 1;
+		else 
+			return 2;
+	}
+
 } // TicTacToeLogic 
