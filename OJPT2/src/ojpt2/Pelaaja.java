@@ -10,14 +10,16 @@ import ojpt2.server.PelinTila;
 import ojpt2.server.RistinollaPalvelin;
 import ojpt2.server.TicTacToeLogic;
 
-public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
+public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private TicTacToeLogic peli;
 	private GUI gui;
+	private RistinollaPalvelin ristinollaPalvelin;
 	private boolean pelaakoViela;
 	private int voitot = 0;
+	private int virheet = 0;
 	
 	private enum VuoroTilanne{
 		VUOROJA_EI_JAETTU,
@@ -27,9 +29,11 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 	
 	private VuoroTilanne vuoroTilanne;
 
-	protected Pelaaja(TicTacToeLogic peli) throws RemoteException {
+	protected Pelaaja(RistinollaPalvelin ristinollaPalvelin) throws RemoteException {
 		super();
-		this.peli = peli;	
+		this.ristinollaPalvelin = ristinollaPalvelin;
+		ristinollaPalvelin.rekisteroiPelaaja(this);
+		ristinollaPalvelin.liityPeliin(this);
 		gui = new GUI();
 		pelaakoViela = true;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
@@ -37,9 +41,11 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
 		// TODO Auto-generated method stub			
-		RistinollaPalvelin peli = (RistinollaPalvelin) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
-		peli.aloitaPeli();
-
+		RistinollaPalvelin ristinollaPalvelin = (RistinollaPalvelin) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
+		Pelaaja pelaaja = new Pelaaja(ristinollaPalvelin);
+		Thread pelaajaSaie = new Thread(pelaaja);
+		pelaajaSaie.start();
+		
 	}
 	
 	@Override
@@ -56,12 +62,40 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 	
 	@Override
 	public void voitto() throws RemoteException {
-		voitot += 1;
+		voitot++;
 	}
+	
+	@Override
+	public void resetGUI() throws RemoteException {
+		gui.ResetGUI();
+	}	
 
 	@Override
 	public void poistu() throws RemoteException {
 		pelaakoViela = false;		
+	}
+	
+	@Override
+	public void paivitaPelia() throws RemoteException {
+		
+	}
+
+	@Override
+	public void run() {
+		while(pelaakoViela){
+			try {
+				paivitaPelia();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				virheet++;
+			}
+			
+			if(virheet == 10){
+				pelaakoViela = false;
+			}
+		}
+		System.exit(1);
+		
 	}
 
 }

@@ -237,7 +237,7 @@ public class GUI extends Thread {
 		buttoncb.setEnabled(false);
 		buttoncc.setEnabled(false);
 	}
-	private void ResetGUI() {
+	public void ResetGUI() {
 		buttonaa.setText("1");
 		buttonab.setText("2");
 		buttonac.setText("3");
