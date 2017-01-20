@@ -6,13 +6,13 @@ package ojpt2.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import ojpt2.client.Pelaaja;
+import ojpt2.Pelaaja;
 
 /**
  * @author Mikko Kokkonen
  *
  */
-public class TicTacToeLogic extends UnicastRemoteObject{
+public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 
 	private static final long serialVersionUID = 1L;
 	private String[][] game;
@@ -25,7 +25,9 @@ public class TicTacToeLogic extends UnicastRemoteObject{
 	private boolean peliOhi;
 	public static PelinTila pelinTila;
 	
+	
 	public TicTacToeLogic() throws RemoteException {
+		super();
 		game = new String[3][3]; // 3x3 peli
 		// Täytä taulukko
 		resetgame();
@@ -44,9 +46,8 @@ public class TicTacToeLogic extends UnicastRemoteObject{
 			}
 		}
 	}
-	public String[] placemark(int row, int column, String xo) {
+	public void placemark(int row, int column, String xo) {
 		game[row][column] = xo;
-		return isWin();
 	} // placemark
 	public String[] isWin() {
 		String[] winning = new String[2];
@@ -58,6 +59,7 @@ public class TicTacToeLogic extends UnicastRemoteObject{
 			if (debug) {
 				printgame();
 			}
+
 		} 
 		if (checkrows("O") || checkcolumns("O") || checkcornertocorner("O")) {
 			winning[0] = "YES";
@@ -65,11 +67,10 @@ public class TicTacToeLogic extends UnicastRemoteObject{
 			if (debug) {
 				printgame();	
 			}
+
 		}
 		return winning;
 	}
-	// Game logic for checking things
-	// ########################################################################
 	private boolean checkrows(String xo) {
 		boolean result = false;
 		if (game[0][0].equalsIgnoreCase(xo) && game[0][1].equalsIgnoreCase(xo) && game[0][2].equalsIgnoreCase(xo)) {
@@ -115,43 +116,34 @@ public class TicTacToeLogic extends UnicastRemoteObject{
 		}
 		System.out.println("");
 	}
-	public enum PelinTila {
-		EI_PELAAJIA,
-		ODOTETAAN_TOISTA_PELAAJAA,
-		PELIN_ALOITUS,
-		ERAN_LOPPU,
-		TASAPELI, 
-		PELI_OHI
-	}
 	
-//	@Override
-//	public void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException {
-//		if(pelaaja1 == null){
-//			pelaaja1 = pelaaja;
-//			pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
-//		}
-//		else if(pelaaja2 == null){
-//			pelaaja2 = pelaaja;
-//			pelinTila = PelinTila.PELIN_ALOITUS;
-//		}
-//		else{
-//			System.out.println("Peli on jo täynnä");
-//		}
-//	}
-//
-//	@Override
-//	public void siirtoTehty(Pelaaja pelaaja) throws RemoteException {
-//		pelaaja.paataVuoro();
-//	}
-//
-//	@Override
-//	public void maaritaVoittaja() throws RemoteException {
-//		
-//	}
-//	@Override
-//	public void poistaPelaaja(Pelaaja pelaaja) throws RemoteException {
-//		pelaaja.poistu();
-//		
-//	}
+	@Override
+	public void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException {
+		if(pelaaja1 == null){
+			pelaaja1 = pelaaja;
+			pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
+		}
+		else if(pelaaja2 == null){
+			pelaaja2 = pelaaja;
+			pelinTila = PelinTila.PELIN_ALOITUS;
+		}
+		else{
+			System.out.println("Peli on jo täynnä");
+		}
+	}
 
+	@Override
+	public void siirtoTehty(Pelaaja pelaaja) throws RemoteException {
+		pelaaja.paataVuoro();
+	}
+
+	@Override
+	public void maaritaVoittaja() throws RemoteException {
+		
+	}
+	@Override
+	public void poistaPelaaja(Pelaaja pelaaja) throws RemoteException {
+		pelaaja.poistu();
+		
+	}
 } // TicTacToeLogic 

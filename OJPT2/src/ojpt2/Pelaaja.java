@@ -1,4 +1,4 @@
-package ojpt2.client;
+package ojpt2;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -6,12 +6,15 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import ojpt2.server.RistinollaPalvelinIF;
+import ojpt2.server.PelinTila;
+import ojpt2.server.RistinollaPalvelin;
+import ojpt2.server.TicTacToeLogic;
 
 public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 
 	private static final long serialVersionUID = 1L;
 	
+	private TicTacToeLogic peli;
 	private GUI gui;
 	private boolean pelaakoViela;
 	private int voitot = 0;
@@ -24,17 +27,19 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 	
 	private VuoroTilanne vuoroTilanne;
 
-	protected Pelaaja() throws RemoteException {
+	protected Pelaaja(TicTacToeLogic peli) throws RemoteException {
 		super();
+		this.peli = peli;	
 		gui = new GUI();
 		pelaakoViela = true;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
 	}
 
 	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		// TODO Auto-generated method stub
-		RistinollaPalvelinIF peli = (RistinollaPalvelinIF) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
+		// TODO Auto-generated method stub			
+		RistinollaPalvelin peli = (RistinollaPalvelin) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
 		peli.aloitaPeli();
+
 	}
 	
 	@Override
@@ -58,4 +63,5 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF {
 	public void poistu() throws RemoteException {
 		pelaakoViela = false;		
 	}
+
 }
