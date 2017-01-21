@@ -5,37 +5,50 @@ package ojpt2.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Random;
 
 import ojpt2.Pelaaja;
+import ojpt2.Pelaaja.VuoroTilanne;
+import ojpt2.server.TicTacToeLogic.PelinTila;
 
 /**
  * @author Mikko Kokkonen
  *
  */
-public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
+public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	private String[][] game;
 	private boolean xoro = true; // True jos O, false jos X
 	private boolean debug = false; 
 	
-	private int peliID;
+	private RistinollaPalvelin ristinollaPalvelin;
 	private Pelaaja pelaaja1;
 	private Pelaaja pelaaja2;
-	private boolean peliOhi;
-	public  PelinTila pelinTila;
+	private boolean peliKaynnissa;
 	
+	public enum PelinTila {
+		EI_PELAAJIA,
+		ODOTETAAN_TOISTA_PELAAJAA,
+		PELIN_ALOITUS,
+		PELI_KAYNNISSA,
+		ERAN_LOPPU,
+		PELI_OHI
+	}
 	
-	public TicTacToeLogic() throws RemoteException {
+	public PelinTila pelinTila;
+	
+	public TicTacToeLogic(RistinollaPalvelin ristinollaPalvelin) throws RemoteException {
 		super();
 		game = new String[3][3]; // 3x3 peli
 		// Täytä taulukko
 		resetgame();
 	
+		this.ristinollaPalvelin = ristinollaPalvelin;
 		pelaaja1 = null;
 		pelaaja2 = null;
 		
-		peliOhi = false;
+		peliKaynnissa = false;
 		pelinTila = PelinTila.EI_PELAAJIA;
 		
 	} // Konstruktori
@@ -117,35 +130,26 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 		System.out.println("");
 	}
 	
-	@Override
-	public void lisaaPelaaja(Pelaaja pelaaja) throws RemoteException {
+	public void lisaaPelaaja(Pelaaja pelaaja) {
 		if(pelaaja1 == null){
 			pelaaja1 = pelaaja;
 			pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
 		}
 		else if(pelaaja2 == null){
 			pelaaja2 = pelaaja;
-			pelinTila = PelinTila.PELIN_ALOITUS;
+			pelinTila = PelinTila.PELI_KAYNNISSA;
 		}
 		else{
-			//Debuggausta varten, ei pitäisi koskaan tulostaa tätä
-			System.out.println("Peli on jo täynnä. Ohjeistetaan palvelinta luomaan uusi pelihuone");
+			System.out.println("Peli on jo täynnä."); //Debuggausta varten, ei pitäisi koskaan tulostaa tätä
 		}
 	}
-
-	@Override
-	public void siirtoTehty(Pelaaja pelaaja) throws RemoteException {
-		pelaaja.paataVuoro();
+	
+	public String[][] getGameString(){
+		return game;
 	}
-
-	@Override
-	public void maaritaVoittaja() throws RemoteException {
-		
-	}
-	@Override
-	public void poistaPelaaja(Pelaaja pelaaja) throws RemoteException {
-		pelaaja.poistu();
-		
+	
+	public void setGameString(String[][] game){
+		this.game = game;
 	}
 	
 	public int getPelaajienMaara(){
@@ -155,6 +159,38 @@ public class TicTacToeLogic extends UnicastRemoteObject implements PeliIF {
 			return 1;
 		else 
 			return 2;
+	}
+	
+	public Pelaaja getPelaaja1(){
+		return pelaaja1;
+	}
+	
+	public Pelaaja getPelaaja2(){
+		return pelaaja2;
+	}
+	
+	public boolean getPeliKaynnissa(){
+		return peliKaynnissa;
+	}
+	
+	public PelinTila getPelinTila(){
+		return pelinTila;
+	}
+	
+	public void aloitaPeli(){
+		peliKaynnissa = true;
+	}
+	
+	public void lopetaPeli(){
+		peliKaynnissa = false;
+	}
+	@Override
+	public void run() {
+		try {
+			ristinollaPalvelin.paivitaPelia(this);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 } // TicTacToeLogic 

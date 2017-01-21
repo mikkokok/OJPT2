@@ -1,62 +1,59 @@
 package ojpt2;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-
-import ojpt2.server.PelinTila;
 import ojpt2.server.RistinollaPalvelin;
-import ojpt2.server.TicTacToeLogic;
 
 public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private TicTacToeLogic peli;
 	private GUI gui;
 	private RistinollaPalvelin ristinollaPalvelin;
 	private boolean pelaakoViela;
+	private int peliID;
 	private int voitot = 0;
 	private int virheet = 0;
+	private String[][] peliTilanne;
+	private boolean vuoroKesken;
 	
-	private enum VuoroTilanne{
+	public enum VuoroTilanne{
 		VUOROJA_EI_JAETTU,
 		MUN_VUORO,
 		VASTUSTAJAN_VUORO
 	}
 	
-	private VuoroTilanne vuoroTilanne;
+	public VuoroTilanne vuoroTilanne;
 
 	protected Pelaaja(RistinollaPalvelin ristinollaPalvelin) throws RemoteException {
 		super();
 		this.ristinollaPalvelin = ristinollaPalvelin;
 		ristinollaPalvelin.rekisteroiPelaaja(this);
-		ristinollaPalvelin.liityPeliin(this);
+		peliID = ristinollaPalvelin.liityPeliin(this);
 		gui = new GUI();
 		pelaakoViela = true;
+		vuoroKesken = false;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
 	}
-
-	public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
-		// TODO Auto-generated method stub			
-		RistinollaPalvelin ristinollaPalvelin = (RistinollaPalvelin) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
-		Pelaaja pelaaja = new Pelaaja(ristinollaPalvelin);
-		Thread pelaajaSaie = new Thread(pelaaja);
-		pelaajaSaie.start();
-		
+	
+	@Override
+	public void alustaGUI() throws RemoteException {
+		gui.setGame(ristinollaPalvelin.getPeli(peliID));
+		gui.UpdateTextArea("Peli alustettu");
+		gui.UpdateTextArea("----------------------");
 	}
 	
 	@Override
 	public void otaVuoro() throws RemoteException {
 		vuoroTilanne = VuoroTilanne.MUN_VUORO;
 		gui.EnableButtons();
+		vuoroKesken = true;
 	}
 	
 	@Override
 	public void paataVuoro() throws RemoteException {
 		vuoroTilanne = VuoroTilanne.VASTUSTAJAN_VUORO;
+		gui.UpdateTextAreab("Vastustajan vuoro");
 		gui.DisableButtons();
 	}
 	
@@ -66,7 +63,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	}
 	
 	@Override
-	public void resetGUI() throws RemoteException {
+	public void resetMyGUI() throws RemoteException {
 		gui.ResetGUI();
 	}	
 
@@ -75,27 +72,64 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 		pelaakoViela = false;		
 	}
 	
+	//Metodi joka p‰ivitt‰‰ pelaajan GUI:ta palvelimelta tulleiden tietojen mukaan
 	@Override
-	public void paivitaPelia() throws RemoteException {
+	public void paivitaGUI() throws RemoteException {
 		
+		//P‰ivitet‰‰n GUI:ta vain silloin kun pelaajan vuoro on k‰ynniss‰
+		if(vuoroTilanne == VuoroTilanne.MUN_VUORO){
+			
+			//Tehd‰‰n vastustajan siirto pelaajan omaan GUI:hin
+			gui.teeVastustajanSiirto(peliTilanne); 
+			gui.UpdateTextAreab("Mun vuoro");
+			
+			while(vuoroKesken){
+				//Odotetetaan pelaajan omia muutoksia GUI:hin
+			}
+			
+			//Kun oma siirto on tehty niin l‰hetet‰‰n tieto muutoksesta palvelimelle 
+			lahetaPelinTilanne();
+		}
 	}
 
+	//Metodi joka palauttaa sen pelin ID: johon t‰m‰ pelaaja kuuluu
+	@Override
+	public int getPeliID(){
+		return peliID;
+	}
+	
+	//Metodi joka vastaanottaa palvelimelta pelin senhetkisen tilanteen eli
+	//vastustajan viimeisimm‰n siirron
+	@Override
+	public void vastaanOtaPeliTilanne(String[][] peliTilanne) throws RemoteException {
+		this.peliTilanne = peliTilanne;
+	}
+	
+	//Metodi joka l‰hett‰‰ palvelimelle pelin senhetkisen tilanteen eli
+	//pelaajan oman viimeisimm‰n siirron
+	@Override
+	public String[][] lahetaPelinTilanne() throws RemoteException {
+		return peliTilanne;
+	}
+	
+	//Metodi joka p‰ivitt‰‰ pelaajan GUI:ta niin kauan kuin 
+	//pelaaja on peliss‰ mukana. Jos virheit‰ tuleee liikaa niin 
+	//poistetaan pelaaja pelist‰ automaattisesti
 	@Override
 	public void run() {
-		while(pelaakoViela){
-			try {
-				paivitaPelia();
+		while(pelaakoViela){			
+			try {				
+				paivitaGUI();
 			} catch (RemoteException e) {
 				e.printStackTrace();
 				virheet++;
 			}
 			
-			if(virheet == 10){
+			if(virheet == 5){
 				pelaakoViela = false;
 			}
 		}
-		System.exit(1);
-		
+		System.exit(1);	
 	}
 
 }

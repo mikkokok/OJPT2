@@ -5,8 +5,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import ojpt2.Pelaaja;
+import ojpt2.Pelaaja.VuoroTilanne;
+import ojpt2.server.TicTacToeLogic.PelinTila;
 
 public class RistinollaPalvelin extends UnicastRemoteObject implements RistinollaPalvelinIF{
 
@@ -20,7 +23,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		super();
 		kaikkiPelit = new HashMap<Integer, TicTacToeLogic>();
 		kaikkiPelaajat = new HashMap<Integer, Pelaaja>();
-		kaikkiPelit.put(peliID, new TicTacToeLogic());
+		kaikkiPelit.put(peliID, new TicTacToeLogic(this));
 	}
 	
 	@Override
@@ -29,8 +32,10 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	}
 
 	@Override
-	public void aloitaPeli(TicTacToeLogic peli) throws RemoteException {
-		peli.pelinTila = PelinTila.PELIN_ALOITUS;
+	public void aloitaPeli(TicTacToeLogic peli) throws RemoteException {	
+		peli.getPelaaja1().alustaGUI();
+		peli.getPelaaja2().alustaGUI();
+		peli.aloitaPeli();		
 	}
 
 	//Metodi joka palauttaa pelin annetun peliID:n mukaan
@@ -50,9 +55,11 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	
 	@Override
 	//Metodi joka liitt‰‰ pelaajan viimeisimp‰‰n peliin
-	public void liityPeliin(Pelaaja pelaaja) throws RemoteException {
-		TicTacToeLogic peli = kaikkiPelit.get(kaikkiPelit.size() - 1);
+	public int liityPeliin(Pelaaja pelaaja) throws RemoteException {
 		
+		int peliID = kaikkiPelit.size() - 1;
+		TicTacToeLogic peli = kaikkiPelit.get(peliID);
+				
 		//Jos peliss‰ ei ole kahta pelaajaa niin pelaaja voidaan lis‰t‰ peliin
 		if(peli.getPelaajienMaara() < 2){ 
 			peli.lisaaPelaaja(pelaaja);
@@ -64,32 +71,98 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			//Jos pelaajan lis‰‰misen j‰lkeen peliss‰ on kaksi pelaajaa niin peli voidaan
 			//aloittaa ja luodaan samalla uusi tyhj‰ pelihuone
 			else if(peli.getPelaajienMaara() == 2){
-				aloitaPeli(peli);		
-				luoUusiPeli();
+				aloitaPeli(peli);	
+				luoUusiPeli();					
 			}
+			
+			return peliID;
 		}
 		else{
 			System.out.println("Peliin ei voi liitty‰ koska se on t‰ynn‰. Luodaan uusi pelihuone");
 			luoUusiPeli();
+			return 0;
 		}
 	}
 	
 	//Metodi joka luo uuden tyhj‰n pelihuoneen 
 	public void luoUusiPeli() throws RemoteException{
 		peliID++;
-		kaikkiPelit.put(peliID, new TicTacToeLogic());
+		kaikkiPelit.put(peliID, new TicTacToeLogic(this));
 	}
-
+	
 	@Override
-	//Metodi joka resetoi asiakkaan k‰yttˆliittym‰n
+	//Metodi joka resetoi pelaajien k‰yttˆliittym‰n
 	public void resetGUI(TicTacToeLogic peli) throws RemoteException {
-		peli.resetgame();	
+		peli.getPelaaja1().resetMyGUI();
+		peli.getPelaaja2().resetMyGUI();
+		peli.pelinTila = PelinTila.PELI_KAYNNISSA;
 	}
 
 	@Override
-	//Metodi joka poistaa pelaajan pelist‰
-	public void poistaPelaaja(TicTacToeLogic peli, Pelaaja pelaaja) throws RemoteException {
-		peli.poistaPelaaja(pelaaja);
+	//Metodi joka poistaa pelin jos pelaaja1 tai pelaaja2 poistuu pelist‰
+	public void poistaPeli(TicTacToeLogic peli) throws RemoteException {
+		kaikkiPelit.remove(peli);
+	}
+
+	@Override
+	public void paivitaPelia(TicTacToeLogic peli) throws RemoteException {
+		
+		while(peli.getPeliKaynnissa()){
+			
+			if(peli.getPelinTila() == PelinTila.PELIN_ALOITUS){
+				
+				//Arvotaan kumpi pelaaja saa aloitusvuoron
+				Random random = new Random();		
+				int aloitusVuoro = random.nextInt(1);
+				
+				if(aloitusVuoro == 0) 
+					peli.getPelaaja1().otaVuoro();
+				else 
+					peli.getPelaaja2().otaVuoro();
+			}
+			
+			else if(peli.getPelinTila() == PelinTila.PELI_KAYNNISSA){
+				
+				if(peli.getPelaaja1().vuoroTilanne == VuoroTilanne.MUN_VUORO){
+					
+					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getGameString());
+					
+					//Miten t‰ss‰ kohtaa voi odottaa pelaajan valintoja ennen kuin muutetaan 
+					//tietoa siit‰ mit‰ muutoksia 3x3 taulukkoon on tehty?
+					
+					peli.setGameString(peli.getPelaaja1().lahetaPelinTilanne()); 
+					
+					peli.getPelaaja1().paataVuoro();
+					peli.getPelaaja2().otaVuoro();
+					
+				}
+				else if(peli.getPelaaja2().vuoroTilanne == VuoroTilanne.MUN_VUORO){
+					
+					peli.getPelaaja2().vastaanOtaPeliTilanne(peli.getGameString());
+					
+					//Miten t‰ss‰ kohtaa voi odottaa pelaajan valintoja ennen kuin muutetaan 
+					//tietoa siit‰ mit‰ muutoksia 3x3 taulukkoon on tehty?
+					
+					peli.setGameString(peli.getPelaaja2().lahetaPelinTilanne()); 
+					
+					peli.getPelaaja2().paataVuoro();
+					peli.getPelaaja1().otaVuoro();
+				}
+				
+			}
+			
+			else if(peli.getPelinTila() == PelinTila.ERAN_LOPPU){
+				
+				
+				
+			}
+			else if(peli.getPelinTila() == PelinTila.PELI_OHI){
+				peli.lopetaPeli();
+			}
+			
+		}
+		poistaPeli(peli);
+		
 	}
 
 }

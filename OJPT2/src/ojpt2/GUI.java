@@ -6,11 +6,8 @@ package ojpt2;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.awt.*;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -46,9 +43,33 @@ public class GUI extends Thread {
 	private boolean isRunning = true;
 	private boolean empty = false;
 	
+	private JButton[][] painikkeet;
+	
 	private static LinkedList<GUI> pelit = new LinkedList<GUI>();
 
 	public GUI () {
+		this.window = new JFrame("Ristinolla");
+
+		// M‰‰ritell‰‰n ikkuna
+		this.window.setSize(900,900);
+		this.window.setBackground(Color.BLUE);
+		this.window.setTitle("Ristinolla");
+		this.window.setLocationRelativeTo(null);
+		this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		this.window.setVisible(true);
+		this.window.setResizable(false);
+		this.window.setLayout(manager);
+		this.window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		this.manager.setHgap(5);
+		this.manager.setVgap(5);
+		
+		painikkeet = new JButton[3][3];
+
+		// Hoida nappulat
+		this.ButtonInit();
+		// Tekstilaatikko
+		this.TextAreaInit();
+		
 		Thread tredi = this;
 		tredi.start();
 	}
@@ -66,6 +87,21 @@ public class GUI extends Thread {
 		buttonextraa = new JButton("Stop");
 		buttonextrab = new JButton("");
 		buttonextrac = new JButton("Reset");
+		
+		//Tallenetaan nappuloiden sijainti muistiin
+		//Painikkeiden sijainnit vastaavat ristinollan 3x3 taulukkoa
+		painikkeet[0][0] = buttonaa;
+		painikkeet[0][1] = buttonab;
+		painikkeet[0][2] = buttonac;
+		
+		painikkeet[1][0] = buttonba;
+		painikkeet[1][1] = buttonbb;
+		painikkeet[1][2] = buttonbc;
+		
+		painikkeet[2][0] = buttonca;
+		painikkeet[2][1] = buttoncb;
+		painikkeet[2][2] = buttoncc;
+		
 
 		// Nappulat ikkunan sis‰lle
 		window.add(buttonaa);
@@ -271,42 +307,30 @@ public class GUI extends Thread {
 			return "X";
 		}
 	}
-	public void run() {
-		this.window = new JFrame("Ristinolla");
-
-		// M‰‰ritell‰‰n ikkuna
-		this.window.setSize(900,900);
-		this.window.setBackground(Color.BLUE);
-		this.window.setTitle("Ristinolla");
-		this.window.setLocationRelativeTo(null);
-		this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		this.window.setVisible(true);
-		this.window.setResizable(false);
-		this.window.setLayout(manager);
-		this.window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		this.manager.setHgap(5);
-		this.manager.setVgap(5);
-
-		// Hoida nappulat
-		this.ButtonInit();
-		// Tekstilaatikko
-		this.TextAreaInit();
-
-		// Luodaan peli
-		try {
-			this.game = new TicTacToeLogic();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		this.UpdateTextArea("Peli alustettu");
-		this.UpdateTextArea("----------------------");
+	
+	public void setGame(TicTacToeLogic game){
+		this.game = game;
 	}
 	
-
-	public static void main(String[] args) {
-
-		pelit.add(new GUI());
+	public void teeVastustajanSiirto(String[][] peliTilanne){
+		if(peliTilanne != null){
+			for(int i = 0; i < peliTilanne.length; i++){
+				
+				for(int j = 0; j < peliTilanne[j].length; j++){
+					
+					if(peliTilanne[i][j] != "" && !painikkeet[i][j].isEnabled()){
+						
+						painikkeet[i][j].doClick();
+						
+					}
+					
+				}
+				
+			}
+		}
 	}
+	
+	/*public static void main(String[] args) {
+		pelit.add(new GUI());
+	}*/
 }
