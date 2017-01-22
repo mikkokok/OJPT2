@@ -64,7 +64,6 @@ public class GUI extends Thread {
 		this.manager.setVgap(5);
 		
 		painikkeet = new JButton[3][3];
-		viimeisinSiirto = new String[3][3];
 
 		// Hoida nappulat
 		this.ButtonInit();
@@ -126,6 +125,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 0 0 "+whichmark());
 				ChangeButton(buttonaa);
 				buttonaa.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][0] = whichmark();
 				buttoncount++;
 			}          
@@ -137,6 +137,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 0 1 "+whichmark());
 				ChangeButton(buttonab);
 				buttonab.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][1] = whichmark();
 				buttoncount++;
 			}          
@@ -148,6 +149,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 0 2 "+whichmark());
 				ChangeButton(buttonac);
 				buttonac.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][2] = whichmark();
 				buttoncount++;
 			}          
@@ -159,6 +161,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 1 0 "+whichmark());
 				ChangeButton(buttonba);
 				buttonba.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][0] = whichmark();
 				buttoncount++;
 			}          
@@ -170,6 +173,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 1 1 "+whichmark());
 				ChangeButton(buttonbb);
 				buttonbb.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][1] = whichmark();
 				buttoncount++;
 			}          
@@ -181,6 +185,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 1 2 "+whichmark());
 				ChangeButton(buttonbc);
 				buttonbc.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][2] = whichmark();
 				buttoncount++;
 			}          
@@ -192,6 +197,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 2 0 "+whichmark());
 				ChangeButton(buttonca);
 				buttonca.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][0] = whichmark();
 				buttoncount++;
 			}          
@@ -203,6 +209,7 @@ public class GUI extends Thread {
 					System.out.println("Paikka 2 1 "+whichmark());
 				ChangeButton(buttoncb);
 				buttoncb.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][1] = whichmark();
 				buttoncount++;
 			}          
@@ -212,6 +219,7 @@ public class GUI extends Thread {
 				//placexor(2, 2, whichmark());
 				ChangeButton(buttoncc);
 				buttoncc.setEnabled(false);
+				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][2] = whichmark();
 				buttoncount++;
 			}          
@@ -325,7 +333,7 @@ public class GUI extends Thread {
 		if(peliTilanne != null){
 			for(int i = 0; i < peliTilanne.length; i++){
 				
-				for(int j = 0; j < peliTilanne[j].length; j++){
+				for(int j = 0; j < peliTilanne[i].length; j++){
 					
 					if(peliTilanne[i][j] != "" && !painikkeet[i][j].isEnabled()){
 						

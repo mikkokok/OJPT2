@@ -100,7 +100,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	public void resetGUI(TicTacToeLogic peli) throws RemoteException {
 		peli.getPelaaja1().resetMyGUI();
 		peli.getPelaaja2().resetMyGUI();
-		peli.pelinTila = PelinTila.PELI_KAYNNISSA;
+		peli.pelinTila = PelinTila.PELIN_ALOITUS;
 	}
 
 	@Override
@@ -129,6 +129,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				else 
 					peli.getPelaaja2().otaVuoro();
 				
+				System.out.println("Vuorot sekoitettu pelaajien kesken");
 				peli.pelinTila = PelinTila.PELI_KAYNNISSA;
 			}
 			
@@ -137,17 +138,21 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				if(peli.getPelaaja1().getVuoroTilanne() == VuoroTilanne.MUN_VUORO){
 					
 					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getGameString());
+					System.out.println("Pelaaja 1:lle l‰hetetty pelin nykyinen tilanne");
 					
 					while(peli.getPelaaja1().onkoVuoroKesken()){
 						//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
 						try {
-							Thread.sleep(5000);
+							System.out.println("Odotetaan pelaaja 1:sen siirtoa...");
+							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
 					
 					peli.setGameString(peli.getPelaaja1().lahetaPelinTilanne()); 
+					
+					System.out.println("Pelitilanne p‰ivitetty");
 					
 					peli.getPelaaja1().paataVuoro();
 					peli.getPelaaja2().otaVuoro();
@@ -156,10 +161,12 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				else if(peli.getPelaaja2().getVuoroTilanne() == VuoroTilanne.MUN_VUORO){
 					
 					peli.getPelaaja2().vastaanOtaPeliTilanne(peli.getGameString());
+					System.out.println("Pelaaja 2:lle l‰hetetty pelin nykyinen tilanne");
 					
 					while(peli.getPelaaja2().onkoVuoroKesken()){
 						//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
 						try {
+							System.out.println("Odotetaan pelaaja 2:sen siirtoa...");
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();

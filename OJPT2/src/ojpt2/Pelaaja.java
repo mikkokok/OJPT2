@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import ojpt2.server.RistinollaPalvelinIF;
 
-public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable {
+public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -16,6 +16,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	private int virheet = 0;
 	private String[][] peliTilanne;
 	private boolean vuoroKesken;
+	private boolean voiPaivittaa = false;
 	
 	public enum VuoroTilanne{
 		VUOROJA_EI_JAETTU,
@@ -71,42 +72,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	public void poistu() throws RemoteException {
 		pelaakoViela = false;		
 	}
-	
-	//Metodi joka p‰ivitt‰‰ pelaajan GUI:ta palvelimelta tulleiden tietojen mukaan
-	@Override
-	public void paivitaGUI() throws RemoteException {
-		
-		//P‰ivitet‰‰n GUI:ta vain silloin kun pelaajan vuoro on k‰ynniss‰
-		if(vuoroTilanne == VuoroTilanne.MUN_VUORO){
-			
-			//Tehd‰‰n vastustajan siirto pelaajan omaan GUI:hin
-			gui.teeVastustajanSiirto(peliTilanne); 
-			gui.UpdateTextAreab("Mun vuoro");
-			
-			while(vuoroKesken){
-				//Odotetetaan pelaajan omia muutoksia GUI:hin
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				if(gui.getviimeisinSiirto() != null){
-					for(int i = 0; i < gui.getviimeisinSiirto().length; i++){
-						for(int j = 0; j < gui.getviimeisinSiirto()[i].length; j++){
-							if(peliTilanne[i][j] != null){
-								peliTilanne[i][j] = gui.getviimeisinSiirto()[i][j];
-							}
-						}
-					}
-					gui.resetviimeisinSiirto();
-					vuoroKesken = false;
-				}
-				
-			}
-			
-		}
-	}
-	
+
 	public boolean onkoVuoroKesken(){
 		return vuoroKesken;
 	}
@@ -117,11 +83,48 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 		return peliID;
 	}
 	
+	@Override
+	public VuoroTilanne getVuoroTilanne() throws RemoteException {
+		return vuoroTilanne;
+	}
+	
+	@Override
+	public void paivitaGUI() throws RemoteException {
+		//Tehd‰‰n vastustajan siirto pelaajan omaan GUI:hin
+		gui.teeVastustajanSiirto(peliTilanne); 
+		gui.UpdateTextAreab("Mun vuoro");
+			
+		while(vuoroKesken){
+			//Odotetetaan pelaajan omia muutoksia GUI:hin
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			if(gui.getviimeisinSiirto() != null){
+				for(int i = 0; i < gui.getviimeisinSiirto().length; i++){
+					for(int j = 0; j < gui.getviimeisinSiirto()[i].length; j++){
+						if(peliTilanne[i][j] != null){
+							peliTilanne[i][j] = gui.getviimeisinSiirto()[i][j];
+						}
+					}
+				}
+				gui.resetviimeisinSiirto();
+				voiPaivittaa = false;
+				vuoroKesken = false;
+			}	
+		}
+	}
+	
 	//Metodi joka vastaanottaa palvelimelta pelin senhetkisen tilanteen eli
 	//vastustajan viimeisimm‰n siirron
 	@Override
 	public void vastaanOtaPeliTilanne(String[][] peliTilanne) throws RemoteException {
 		this.peliTilanne = peliTilanne;
+		voiPaivittaa = true;
+		
 	}
 	
 	//Metodi joka l‰hett‰‰ palvelimelle pelin senhetkisen tilanteen eli
@@ -132,28 +135,28 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	}
 	
 	//Metodi joka p‰ivitt‰‰ pelaajan GUI:ta niin kauan kuin 
-	//pelaaja on peliss‰ mukana. Jos virheit‰ tuleee liikaa niin 
-	//poistetaan pelaaja pelist‰ automaattisesti
+	//pelaaja on peliss‰ mukana.
 	@Override
 	public void run() {
-		while(pelaakoViela){			
-			try {				
-				paivitaGUI();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				virheet++;
+		while(pelaakoViela){	
+			
+			if(voiPaivittaa){
+				try {
+					paivitaGUI();
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+			else{
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 			
-			if(virheet == 5){
-				pelaakoViela = false;
-			}
 		}
 		System.exit(1);	
-	}
-
-	@Override
-	public VuoroTilanne getVuoroTilanne() throws RemoteException {
-		return vuoroTilanne;
 	}
 
 }
