@@ -37,6 +37,9 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	public void aloitaPeli(TicTacToeLogic peli) throws RemoteException {	
 		peli.getPelaaja1().alustaGUI();
 		peli.getPelaaja2().alustaGUI();
+		
+		System.out.println("Tuli aloitaPeli-metodiin");
+		
 		peli.aloitaPeli();		
 	}
 
@@ -108,6 +111,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 
 	@Override
 	public void paivitaPelia(TicTacToeLogic peli) throws RemoteException {
+		
+		System.out.println("Tuli paivitaPelia metodiin");
 		
 		while(peli.getPeliKaynnissa()){
 			

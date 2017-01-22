@@ -28,13 +28,13 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	protected Pelaaja(RistinollaPalvelinIF ristinollaPalvelin) throws RemoteException {
 		super();
 		this.ristinollaPalvelin = ristinollaPalvelin;
-		ristinollaPalvelin.rekisteroiPelaaja(this);
-		peliID = ristinollaPalvelin.liityPeliin(this);
 		gui = new GUI();
 		gui.DisableButtons();
 		pelaakoViela = true;
 		vuoroKesken = false;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
+		ristinollaPalvelin.rekisteroiPelaaja(this);
+		peliID = ristinollaPalvelin.liityPeliin(this);
 	}
 	
 	@Override

@@ -138,7 +138,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 		else if(pelaaja2 == null){
 			pelaaja2 = pelaaja;
-			pelinTila = PelinTila.PELI_KAYNNISSA;
+			pelinTila = PelinTila.PELIN_ALOITUS;
 		}
 		else{
 			System.out.println("Peli on jo täynnä."); //Debuggausta varten, ei pitäisi koskaan tulostaa tätä
@@ -180,18 +180,22 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 	
 	public void aloitaPeli(){
 		peliKaynnissa = true;
+		System.out.println("Tuli Peli-luokan aloitaPeli-metodiin");
+		run();
 	}
 	
 	public void lopetaPeli(){
 		peliKaynnissa = false;
 	}
+	
 	@Override
 	public void run() {
 		try {
 			ristinollaPalvelin.paivitaPelia(this);
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		}
-	}
 
-} // TicTacToeLogic 
+		}
+
+	}
+}// TicTacToeLogic 
