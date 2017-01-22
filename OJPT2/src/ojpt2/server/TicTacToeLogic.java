@@ -9,6 +9,7 @@ import java.util.Random;
 
 import ojpt2.Pelaaja;
 import ojpt2.Pelaaja.VuoroTilanne;
+import ojpt2.PelaajaIF;
 import ojpt2.server.TicTacToeLogic.PelinTila;
 
 /**
@@ -23,8 +24,8 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 	private boolean debug = false; 
 	
 	private RistinollaPalvelin ristinollaPalvelin;
-	private Pelaaja pelaaja1;
-	private Pelaaja pelaaja2;
+	private PelaajaIF pelaaja1;
+	private PelaajaIF pelaaja2;
 	private boolean peliKaynnissa;
 	
 	public enum PelinTila {
@@ -130,7 +131,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		System.out.println("");
 	}
 	
-	public void lisaaPelaaja(Pelaaja pelaaja) {
+	public void lisaaPelaaja(PelaajaIF pelaaja) {
 		if(pelaaja1 == null){
 			pelaaja1 = pelaaja;
 			pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
@@ -161,11 +162,11 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 			return 2;
 	}
 	
-	public Pelaaja getPelaaja1(){
+	public PelaajaIF getPelaaja1(){
 		return pelaaja1;
 	}
 	
-	public Pelaaja getPelaaja2(){
+	public PelaajaIF getPelaaja2(){
 		return pelaaja2;
 	}
 	

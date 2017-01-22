@@ -9,7 +9,7 @@ public class RistinollaPalvelinToteuttaja {
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
 		// TODO Auto-generated method stub
 		Naming.rebind("RistinollaPalvelin", new RistinollaPalvelin());
-		System.out.print("Palvelimen käynnistäminen onnistui");
+		
 	}
 
 }

@@ -3,7 +3,11 @@ package ojpt2;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import ojpt2.Pelaaja.VuoroTilanne;
+
 public interface PelaajaIF extends Remote {
+	VuoroTilanne getVuoroTilanne() throws RemoteException;
+	boolean onkoVuoroKesken() throws RemoteException;
 	void alustaGUI() throws RemoteException;
 	void paivitaGUI() throws RemoteException;
 	void otaVuoro() throws RemoteException; 

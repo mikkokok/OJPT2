@@ -2,14 +2,14 @@ package ojpt2;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import ojpt2.server.RistinollaPalvelin;
+import ojpt2.server.RistinollaPalvelinIF;
 
 public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private GUI gui;
-	private RistinollaPalvelin ristinollaPalvelin;
+	private RistinollaPalvelinIF ristinollaPalvelin;
 	private boolean pelaakoViela;
 	private int peliID;
 	private int voitot = 0;
@@ -25,7 +25,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	
 	public VuoroTilanne vuoroTilanne;
 
-	protected Pelaaja(RistinollaPalvelin ristinollaPalvelin) throws RemoteException {
+	protected Pelaaja(RistinollaPalvelinIF ristinollaPalvelin) throws RemoteException {
 		super();
 		this.ristinollaPalvelin = ristinollaPalvelin;
 		ristinollaPalvelin.rekisteroiPelaaja(this);
@@ -149,6 +149,11 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 			}
 		}
 		System.exit(1);	
+	}
+
+	@Override
+	public VuoroTilanne getVuoroTilanne() throws RemoteException {
+		return vuoroTilanne;
 	}
 
 }

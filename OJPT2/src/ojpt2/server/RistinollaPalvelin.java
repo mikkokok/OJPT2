@@ -9,6 +9,7 @@ import java.util.Random;
 
 import ojpt2.Pelaaja;
 import ojpt2.Pelaaja.VuoroTilanne;
+import ojpt2.PelaajaIF;
 import ojpt2.server.TicTacToeLogic.PelinTila;
 
 public class RistinollaPalvelin extends UnicastRemoteObject implements RistinollaPalvelinIF{
@@ -17,17 +18,17 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	private int peliID = 0;
 	private int pelaajaID = 0;
 	private HashMap<Integer, TicTacToeLogic> kaikkiPelit;
-	private HashMap<Integer, Pelaaja> kaikkiPelaajat;
+	private HashMap<Integer, PelaajaIF> kaikkiPelaajat;
 	
 	protected RistinollaPalvelin() throws RemoteException {
 		super();
 		kaikkiPelit = new HashMap<Integer, TicTacToeLogic>();
-		kaikkiPelaajat = new HashMap<Integer, Pelaaja>();
+		kaikkiPelaajat = new HashMap<Integer, PelaajaIF>();
 		kaikkiPelit.put(peliID, new TicTacToeLogic(this));
 	}
 	
 	@Override
-	public void rekisteroiPelaaja(Pelaaja pelaaja) throws RemoteException {
+	public void rekisteroiPelaaja(PelaajaIF pelaaja) throws RemoteException {
 		kaikkiPelaajat.put(pelaajaID, pelaaja);
 	}
 
@@ -55,7 +56,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	
 	@Override
 	//Metodi joka liitt‰‰ pelaajan viimeisimp‰‰n peliin
-	public int liityPeliin(Pelaaja pelaaja) throws RemoteException {
+	public int liityPeliin(PelaajaIF pelaaja) throws RemoteException {
 		
 		int peliID = kaikkiPelit.size() - 1;
 		TicTacToeLogic peli = kaikkiPelit.get(peliID);
@@ -127,7 +128,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			
 			else if(peli.getPelinTila() == PelinTila.PELI_KAYNNISSA){
 				
-				if(peli.getPelaaja1().vuoroTilanne == VuoroTilanne.MUN_VUORO){
+				if(peli.getPelaaja1().getVuoroTilanne() == VuoroTilanne.MUN_VUORO){
 					
 					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getGameString());
 					
@@ -146,7 +147,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					peli.getPelaaja2().otaVuoro();
 					
 				}
-				else if(peli.getPelaaja2().vuoroTilanne == VuoroTilanne.MUN_VUORO){
+				else if(peli.getPelaaja2().getVuoroTilanne() == VuoroTilanne.MUN_VUORO){
 					
 					peli.getPelaaja2().vastaanOtaPeliTilanne(peli.getGameString());
 					
