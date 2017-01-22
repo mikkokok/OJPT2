@@ -85,11 +85,30 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 			
 			while(vuoroKesken){
 				//Odotetetaan pelaajan omia muutoksia GUI:hin
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if(gui.getviimeisinSiirto() != null){
+					for(int i = 0; i < gui.getviimeisinSiirto().length; i++){
+						for(int j = 0; j < gui.getviimeisinSiirto()[i].length; j++){
+							if(peliTilanne[i][j] != null){
+								peliTilanne[i][j] = gui.getviimeisinSiirto()[i][j];
+							}
+						}
+					}
+					gui.resetviimeisinSiirto();
+					vuoroKesken = false;
+				}
+				
 			}
 			
-			//Kun oma siirto on tehty niin lähetetään tieto muutoksesta palvelimelle 
-			lahetaPelinTilanne();
 		}
+	}
+	
+	public boolean onkoVuoroKesken(){
+		return vuoroKesken;
 	}
 
 	//Metodi joka palauttaa sen pelin ID: johon tämä pelaaja kuuluu

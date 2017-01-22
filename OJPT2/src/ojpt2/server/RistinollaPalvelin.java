@@ -109,6 +109,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		
 		while(peli.getPeliKaynnissa()){
 			
+			//Pelin aloitus tilassa arvotaan kumpi pelaaja saa aloitusvuoron ja 
+			//sen j‰lkeen peli voidaan todella k‰ynnist‰‰
 			if(peli.getPelinTila() == PelinTila.PELIN_ALOITUS){
 				
 				//Arvotaan kumpi pelaaja saa aloitusvuoron
@@ -119,6 +121,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					peli.getPelaaja1().otaVuoro();
 				else 
 					peli.getPelaaja2().otaVuoro();
+				
+				peli.pelinTila = PelinTila.PELI_KAYNNISSA;
 			}
 			
 			else if(peli.getPelinTila() == PelinTila.PELI_KAYNNISSA){
@@ -127,8 +131,14 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					
 					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getGameString());
 					
-					//Miten t‰ss‰ kohtaa voi odottaa pelaajan valintoja ennen kuin muutetaan 
-					//tietoa siit‰ mit‰ muutoksia 3x3 taulukkoon on tehty?
+					while(peli.getPelaaja1().onkoVuoroKesken()){
+						//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 					
 					peli.setGameString(peli.getPelaaja1().lahetaPelinTilanne()); 
 					
@@ -140,8 +150,14 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					
 					peli.getPelaaja2().vastaanOtaPeliTilanne(peli.getGameString());
 					
-					//Miten t‰ss‰ kohtaa voi odottaa pelaajan valintoja ennen kuin muutetaan 
-					//tietoa siit‰ mit‰ muutoksia 3x3 taulukkoon on tehty?
+					while(peli.getPelaaja2().onkoVuoroKesken()){
+						//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 					
 					peli.setGameString(peli.getPelaaja2().lahetaPelinTilanne()); 
 					
@@ -152,7 +168,6 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			}
 			
 			else if(peli.getPelinTila() == PelinTila.ERAN_LOPPU){
-				
 				
 				
 			}
