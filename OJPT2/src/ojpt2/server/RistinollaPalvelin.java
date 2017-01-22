@@ -30,6 +30,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	@Override
 	public void rekisteroiPelaaja(PelaajaIF pelaaja) throws RemoteException {
 		kaikkiPelaajat.put(pelaajaID, pelaaja);
+		pelaajaID++;
 	}
 
 	@Override

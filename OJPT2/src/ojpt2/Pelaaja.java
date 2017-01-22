@@ -31,6 +31,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 		ristinollaPalvelin.rekisteroiPelaaja(this);
 		peliID = ristinollaPalvelin.liityPeliin(this);
 		gui = new GUI();
+		gui.DisableButtons();
 		pelaakoViela = true;
 		vuoroKesken = false;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
@@ -38,7 +39,6 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable 
 	
 	@Override
 	public void alustaGUI() throws RemoteException {
-		gui.setGame(ristinollaPalvelin.getPeli(peliID));
 		gui.UpdateTextArea("Peli alustettu");
 		gui.UpdateTextArea("----------------------");
 	}
