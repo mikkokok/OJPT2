@@ -43,9 +43,19 @@ public class GUI extends Thread {
 	private boolean isRunning = true;
 	private boolean empty = false;
 	
+	private boolean buttonaaClicked = false;
+	private boolean buttonabClicked = false;
+	private boolean buttonacClicked = false;
+	private boolean buttonbaClicked = false;
+	private boolean buttonbbClicked = false;
+	private boolean buttonbcClicked = false;
+	private boolean buttoncaClicked = false;
+	private boolean buttoncbClicked = false;
+	private boolean buttonccClicked = false;
+	
 	private JButton[][] painikkeet;
+	private boolean[][] klikatutPainikkeet;
 	private String[][] viimeisinSiirto;
-	private static LinkedList<GUI> pelit = new LinkedList<GUI>();
 
 	public GUI () {
 		this.window = new JFrame("Ristinolla");
@@ -64,6 +74,7 @@ public class GUI extends Thread {
 		this.manager.setVgap(5);
 		
 		painikkeet = new JButton[3][3];
+		klikatutPainikkeet = new boolean[3][3];
 
 		// Hoida nappulat
 		this.ButtonInit();
@@ -102,9 +113,20 @@ public class GUI extends Thread {
 		painikkeet[2][1] = buttoncb;
 		painikkeet[2][2] = buttoncc;
 		
+		klikatutPainikkeet[0][0] = buttonaaClicked;
+		klikatutPainikkeet[0][1] = buttonabClicked;
+		klikatutPainikkeet[0][2] = buttonacClicked;
+		
+		klikatutPainikkeet[1][0] = buttonbaClicked;
+		klikatutPainikkeet[1][1] = buttonbbClicked;
+		klikatutPainikkeet[1][2] = buttonbcClicked;
+		
+		klikatutPainikkeet[2][0] = buttoncaClicked;
+		klikatutPainikkeet[2][1] = buttoncbClicked;
+		klikatutPainikkeet[2][2] = buttonccClicked;
 
 		// Nappulat ikkunan sisälle
-		window.add(buttonaa);
+		/*window.add(buttonaa);
 		window.add(buttonab);
 		window.add(buttonac);
 		window.add(buttonba);
@@ -112,7 +134,18 @@ public class GUI extends Thread {
 		window.add(buttonbc);
 		window.add(buttonca);
 		window.add(buttoncb);
-		window.add(buttoncc);
+		window.add(buttoncc);*/
+		
+		window.add(painikkeet[0][0]);
+		window.add(painikkeet[0][1]);
+		window.add(painikkeet[0][2]);
+		window.add(painikkeet[1][0]);
+		window.add(painikkeet[1][1]);
+		window.add(painikkeet[1][2]);
+		window.add(painikkeet[2][0]);
+		window.add(painikkeet[2][1]);
+		window.add(painikkeet[2][2]);
+		
 		window.add(buttonextraa);
 		window.add(buttonextrab);
 		window.add(buttonextrac);
@@ -124,6 +157,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 0 0 "+whichmark());
 				ChangeButton(buttonaa);
+				buttonaaClicked = true;
+				
 				buttonaa.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][0] = whichmark();
@@ -136,6 +171,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 0 1 "+whichmark());
 				ChangeButton(buttonab);
+				buttonabClicked = true;
+				
 				buttonab.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][1] = whichmark();
@@ -148,6 +185,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 0 2 "+whichmark());
 				ChangeButton(buttonac);
+				buttonacClicked = true;
+				
 				buttonac.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][2] = whichmark();
@@ -160,6 +199,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 1 0 "+whichmark());
 				ChangeButton(buttonba);
+				buttonbaClicked = true;
+				
 				buttonba.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][0] = whichmark();
@@ -172,6 +213,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 1 1 "+whichmark());
 				ChangeButton(buttonbb);
+				buttonbbClicked = true;
+				
 				buttonbb.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][1] = whichmark();
@@ -184,6 +227,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 1 2 "+whichmark());
 				ChangeButton(buttonbc);
+				buttonbcClicked = true;
+				
 				buttonbc.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][2] = whichmark();
@@ -196,6 +241,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 2 0 "+whichmark());
 				ChangeButton(buttonca);
+				buttoncaClicked = true;
+				
 				buttonca.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][0] = whichmark();
@@ -208,6 +255,8 @@ public class GUI extends Thread {
 				if (debug)
 					System.out.println("Paikka 2 1 "+whichmark());
 				ChangeButton(buttoncb);
+				buttoncbClicked = true;
+				
 				buttoncb.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][1] = whichmark();
@@ -218,6 +267,8 @@ public class GUI extends Thread {
 			public void actionPerformed(ActionEvent e) {
 				//placexor(2, 2, whichmark());
 				ChangeButton(buttoncc);
+				buttonccClicked = true;
+
 				buttoncc.setEnabled(false);
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][2] = whichmark();
@@ -270,7 +321,16 @@ public class GUI extends Thread {
 		}
 	}
 	public void EnableButtons() {
-		buttonaa.setEnabled(true);
+		
+		for(int i = 0; i < painikkeet.length; i++){
+			for(int j = 0; j < painikkeet[i].length; j++){
+				if(klikatutPainikkeet[i][j] == false){
+					painikkeet[i][j].setEnabled(true);
+				}
+			}
+		}
+		
+		/*buttonaa.setEnabled(true);
 		buttonab.setEnabled(true);
 		buttonac.setEnabled(true);
 		buttonba.setEnabled(true);
@@ -278,10 +338,20 @@ public class GUI extends Thread {
 		buttonbc.setEnabled(true);
 		buttonca.setEnabled(true);
 		buttoncb.setEnabled(true);
-		buttoncc.setEnabled(true);
+		buttoncc.setEnabled(true);*/
 	}
 	public void DisableButtons() {
-		buttonaa.setEnabled(false);
+		
+		for(int i = 0; i < painikkeet.length; i++){
+			for(int j = 0; j < painikkeet[i].length; j++){
+				if(klikatutPainikkeet[i][j] == false){
+					painikkeet[i][j].setEnabled(false);
+				}
+				
+			}
+		}
+		
+		/*buttonaa.setEnabled(false);
 		buttonab.setEnabled(false);
 		buttonac.setEnabled(false);
 		buttonba.setEnabled(false);
@@ -289,7 +359,7 @@ public class GUI extends Thread {
 		buttonbc.setEnabled(false);
 		buttonca.setEnabled(false);
 		buttoncb.setEnabled(false);
-		buttoncc.setEnabled(false);
+		buttoncc.setEnabled(false);*/
 	}
 	public void ResetGUI() {
 		buttonaa.setText("1");
@@ -330,18 +400,22 @@ public class GUI extends Thread {
 	}*/
 	
 	public void teeVastustajanSiirto(String[][] peliTilanne){
-		if(peliTilanne != null){
-			for(int i = 0; i < peliTilanne.length; i++){
+			
+		System.out.println("Tuli teeVastustajansiirto metodiin");
+			
+		for(int i = 0; i < peliTilanne.length; i++){
 				
-				for(int j = 0; j < peliTilanne[i].length; j++){
+			for(int j = 0; j < peliTilanne[i].length; j++){
 					
-					if(peliTilanne[i][j] != "" && !painikkeet[i][j].isEnabled()){
+				System.out.println(peliTilanne[i][j] + " " + painikkeet[i][j].isEnabled());
+					
+				if(peliTilanne[i][j] == "X" || peliTilanne[i][j] == "O" && painikkeet[i][j].isEnabled()){
 						
-						painikkeet[i][j].doClick();
+					painikkeet[i][j].doClick();
+					System.out.println("Klikkasi painiketta");
 						
-					}
-				}	
-			}
+				}
+			}	
 		}
 	}
 	
@@ -350,11 +424,7 @@ public class GUI extends Thread {
 	}
 	
 	public void resetviimeisinSiirto(){
-		for(int i = 0; i < viimeisinSiirto.length; i++){
-			for(int j = 0; j < viimeisinSiirto[i].length; j++){
-				viimeisinSiirto[i][j] = null;
-			}
-		}
+		viimeisinSiirto = null;
 	}
 	
 	/*public static void main(String[] args) {

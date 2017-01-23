@@ -31,17 +31,25 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		this.ristinollaPalvelin = ristinollaPalvelin;
 		gui = new GUI();
 		gui.DisableButtons();
+		peliTilanne = new String[3][3];
 		pelaakoViela = true;
 		vuoroKesken = false;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
+		Thread pelaajaSaie = new Thread(this);
+		pelaajaSaie.start();
 		ristinollaPalvelin.rekisteroiPelaaja(this);
 		peliID = ristinollaPalvelin.liityPeliin(this);
+		System.out.println("Pelaajan luonti ja palvelimeen yhdistäminen onnistui.");
+
 	}
 	
 	@Override
 	public void alustaGUI() throws RemoteException {
+		System.out.println("Tuli alustaGUI-metodiin");
 		gui.UpdateTextArea("Peli alustettu");
 		gui.UpdateTextArea("----------------------");
+		//Thread pelaajaSaie = new Thread(this);
+		//pelaajaSaie.start();
 	}
 	
 	@Override
@@ -95,8 +103,8 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		gui.UpdateTextAreab("Mun vuoro");
 			
 		while(vuoroKesken){
-			//Odotetetaan pelaajan omia muutoksia GUI:hin
 			
+			//Odotetetaan pelaajan omia muutoksia GUI:hin			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -104,16 +112,21 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 			}
 			
 			if(gui.getviimeisinSiirto() != null){
-				for(int i = 0; i < gui.getviimeisinSiirto().length; i++){
+				System.out.println("Viimeisin siirtoni tallentui väliaikaismuuttujaan");
+				
+				/*for(int i = 0; i < gui.getviimeisinSiirto().length; i++){
 					for(int j = 0; j < gui.getviimeisinSiirto()[i].length; j++){
-						if(peliTilanne[i][j] != null){
+						if(peliTilanne[i][j] != "X" || peliTilanne[i][j] != "O"){
 							peliTilanne[i][j] = gui.getviimeisinSiirto()[i][j];
+							System.out.println(peliTilanne[i][j]);
 						}
 					}
-				}
-				gui.resetviimeisinSiirto();
+				}*/
+				
+				//gui.resetviimeisinSiirto();
 				voiPaivittaa = false;
 				vuoroKesken = false;
+				System.out.println("Vuoroni loppui");
 			}	
 		}
 	}
@@ -123,6 +136,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	@Override
 	public void vastaanOtaPeliTilanne(String[][] peliTilanne) throws RemoteException {
 		this.peliTilanne = peliTilanne;
+		gui.resetviimeisinSiirto();
 		voiPaivittaa = true;
 		
 	}
@@ -130,8 +144,9 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	//Metodi joka lähettää palvelimelle pelin senhetkisen tilanteen eli
 	//pelaajan oman viimeisimmän siirron
 	@Override
-	public String[][] lahetaPelinTilanne() throws RemoteException {
-		return peliTilanne;
+	public String[][] lahetaViimeisinSiirtoni() throws RemoteException {
+		//return peliTilanne;
+		return gui.getviimeisinSiirto();
 	}
 	
 	//Metodi joka päivittää pelaajan GUI:ta niin kauan kuin 

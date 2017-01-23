@@ -33,7 +33,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		pelaajaID++;
 	}
 
-	@Override
+	/*@Override
 	public void aloitaPeli(TicTacToeLogic peli) throws RemoteException {	
 		peli.getPelaaja1().alustaGUI();
 		peli.getPelaaja2().alustaGUI();
@@ -41,7 +41,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		System.out.println("Tuli aloitaPeli-metodiin");
 		
 		peli.aloitaPeli();		
-	}
+	}*/
 
 	//Metodi joka palauttaa pelin annetun peliID:n mukaan
 	public TicTacToeLogic getPeli(int peliID) throws RemoteException {
@@ -58,6 +58,12 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		return peli;
 	}
 	
+	//Metodi joka luo uuden tyhj‰n pelihuoneen 
+	public void luoUusiPeli() throws RemoteException{
+		peliID++;
+		kaikkiPelit.put(peliID, new TicTacToeLogic(this));
+	}
+	
 	@Override
 	//Metodi joka liitt‰‰ pelaajan viimeisimp‰‰n peliin
 	public int liityPeliin(PelaajaIF pelaaja) throws RemoteException {
@@ -69,6 +75,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		if(peli.getPelaajienMaara() < 2){ 
 			peli.lisaaPelaaja(pelaaja);
 			
+			pelaaja.alustaGUI();
+			
 			if(peli.getPelaajienMaara() == 1){
 				peli.pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
 			}
@@ -76,7 +84,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			//Jos pelaajan lis‰‰misen j‰lkeen peliss‰ on kaksi pelaajaa niin peli voidaan
 			//aloittaa ja luodaan samalla uusi tyhj‰ pelihuone
 			else if(peli.getPelaajienMaara() == 2){
-				aloitaPeli(peli);	
+				//aloitaPeli(peli);
+				peli.aloitaPeli();
 				luoUusiPeli();					
 			}
 			
@@ -87,12 +96,6 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			luoUusiPeli();
 			return 0;
 		}
-	}
-	
-	//Metodi joka luo uuden tyhj‰n pelihuoneen 
-	public void luoUusiPeli() throws RemoteException{
-		peliID++;
-		kaikkiPelit.put(peliID, new TicTacToeLogic(this));
 	}
 	
 	@Override
@@ -137,7 +140,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				
 				if(peli.getPelaaja1().getVuoroTilanne() == VuoroTilanne.MUN_VUORO){
 					
-					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getGameString());
+					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getPeliTilanne());
 					System.out.println("Pelaaja 1:lle l‰hetetty pelin nykyinen tilanne");
 					
 					while(peli.getPelaaja1().onkoVuoroKesken()){
@@ -150,9 +153,20 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 						}
 					}
 					
-					peli.setGameString(peli.getPelaaja1().lahetaPelinTilanne()); 
+					peli.lisaaSiirto(peli.getPelaaja1().lahetaViimeisinSiirtoni()); 
 					
-					System.out.println("Pelitilanne p‰ivitetty");
+					//Debuggausta varten
+					System.out.println("Pelaaj1 p‰ivitti pelitilanteen p‰ivitetty. Pelitilanne on nyt:");
+					System.out.println("------------------");
+					
+					//Debuggausta varten, katsotaan onko pelitilanne muuttunut
+					for(int i = 0; i < peli.getPeliTilanne().length; i++){
+						for(int j = 0; j < peli.getPeliTilanne()[i].length; j++){
+							System.out.println("Paikassa: " + i + " " + j + " " + peli.getPeliTilanne()[i][j]);
+						}
+					}
+					
+					System.out.println("------------------"); 
 					
 					peli.getPelaaja1().paataVuoro();
 					peli.getPelaaja2().otaVuoro();
@@ -160,7 +174,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				}
 				else if(peli.getPelaaja2().getVuoroTilanne() == VuoroTilanne.MUN_VUORO){
 					
-					peli.getPelaaja2().vastaanOtaPeliTilanne(peli.getGameString());
+					peli.getPelaaja2().vastaanOtaPeliTilanne(peli.getPeliTilanne());
 					System.out.println("Pelaaja 2:lle l‰hetetty pelin nykyinen tilanne");
 					
 					while(peli.getPelaaja2().onkoVuoroKesken()){
@@ -173,7 +187,20 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 						}
 					}
 					
-					peli.setGameString(peli.getPelaaja2().lahetaPelinTilanne()); 
+					peli.lisaaSiirto(peli.getPelaaja2().lahetaViimeisinSiirtoni()); 
+					
+					//Debuggausta varten
+					System.out.println("Pelaaj2 p‰ivitti pelitilanteen p‰ivitetty. Pelitilanne on nyt:");
+					System.out.println("------------------");
+					
+					//Debuggausta varten, katsotaan onko pelitilanne muuttunut
+					for(int i = 0; i < peli.getPeliTilanne().length; i++){
+						for(int j = 0; j < peli.getPeliTilanne()[i].length; j++){
+							System.out.println("Paikassa: " + i + " " + j + " " + peli.getPeliTilanne()[i][j]);
+						}
+					}
+					
+					System.out.println("------------------"); 
 					
 					peli.getPelaaja2().paataVuoro();
 					peli.getPelaaja1().otaVuoro();

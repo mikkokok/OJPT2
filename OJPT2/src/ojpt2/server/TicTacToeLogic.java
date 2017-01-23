@@ -145,12 +145,19 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 	}
 	
-	public String[][] getGameString(){
+	public String[][] getPeliTilanne(){
 		return game;
 	}
 	
-	public void setGameString(String[][] game){
-		this.game = game;
+	public void lisaaSiirto(String[][] peliTilanne){
+		for(int i = 0; i < this.game.length; i++){
+			for(int j = 0; j < this.game[i].length; j++){
+				if(peliTilanne[i][j] != null){
+					placemark(i, j, peliTilanne[i][j]);
+				}
+			}
+		}
+		//this.game = game;
 	}
 	
 	public int getPelaajienMaara(){

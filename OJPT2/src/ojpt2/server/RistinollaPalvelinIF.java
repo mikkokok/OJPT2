@@ -8,7 +8,7 @@ import ojpt2.PelaajaIF;
 
 public interface RistinollaPalvelinIF extends Remote {
 	void rekisteroiPelaaja(PelaajaIF pelaaja) throws RemoteException;
-	void aloitaPeli(TicTacToeLogic peli) throws RemoteException;
+	//void aloitaPeli(TicTacToeLogic peli) throws RemoteException;
 	TicTacToeLogic getPeli(int peliID) throws RemoteException;
 	void luoUusiPeli() throws RemoteException;
 	int liityPeliin(PelaajaIF pelaaja) throws RemoteException;
