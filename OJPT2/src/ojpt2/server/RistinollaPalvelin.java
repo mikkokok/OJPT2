@@ -20,12 +20,13 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	private HashMap<Integer, TicTacToeLogic> kaikkiPelit;
 	private HashMap<Integer, PelaajaIF> kaikkiPelaajat;
 	
+	
 	protected RistinollaPalvelin() throws RemoteException {
 		super();
 		kaikkiPelit = new HashMap<Integer, TicTacToeLogic>();
 		kaikkiPelaajat = new HashMap<Integer, PelaajaIF>();
 		kaikkiPelit.put(peliID, new TicTacToeLogic(this));
-	}
+	}//Konstruktori
 	
 	@Override
 	public void rekisteroiPelaaja(PelaajaIF pelaaja) throws RemoteException {
@@ -37,9 +38,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	public void aloitaPeli(TicTacToeLogic peli) throws RemoteException {	
 		peli.getPelaaja1().alustaGUI();
 		peli.getPelaaja2().alustaGUI();
-		
-		System.out.println("Tuli aloitaPeli-metodiin");
-		
+		//System.out.println("Tuli aloitaPeli-metodiin");
 		peli.aloitaPeli();		
 	}
 
@@ -106,24 +105,22 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	@Override
 	public void tarkistaVoitto(int peliID) throws RemoteException {
 		
-		System.out.println("Tuli tarkista voitto - metodiin");
+		//System.out.println("Tuli tarkista voitto - metodiin");
 		TicTacToeLogic peli = this.getPeli(peliID);
 		
 			if(peli.isWin() == "pelaaja1"){
 				System.out.println("Pelaaja1 voitti pelin");
 				peli.getPelaaja1().voitto();
 				peli.getPelaaja2().havio();
-				peli.pelinTila = PelinTila.ERAN_LOPPU; 
+				peli.pelinTila = PelinTila.PELI_OHI; 
 				peli.run();
-				//paivitaPelia(peli);
 			}
 			else if(peli.isWin() == "pelaaja2"){
 				System.out.println("Pelaaja2 voitti pelin");
 				peli.getPelaaja2().voitto();
 				peli.getPelaaja1().havio();
-				peli.pelinTila = PelinTila.ERAN_LOPPU; 
+				peli.pelinTila = PelinTila.PELI_OHI; 
 				peli.run();
-				//paivitaPelia(peli);
 			}
 	}
 	
@@ -136,7 +133,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	@Override
 	public void paivitaPelia(TicTacToeLogic peli) throws RemoteException {
 		
-		System.out.println("Tuli paivitaPelia metodiin");
+		//System.out.println("Tuli paivitaPelia metodiin");
 		
 		while(peli.getPeliKaynnissa()){
 			
@@ -146,7 +143,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				
 				//Arvotaan kumpi pelaaja saa aloitusvuoron
 				Random random = new Random();		
-				int aloitusVuoro = random.nextInt(1);
+				int aloitusVuoro = random.nextInt(2);
 				
 				if(aloitusVuoro == 0) 
 					peli.getPelaaja1().otaVuoro();
@@ -167,7 +164,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
 					while(peli.getPelaaja1().onkoVuoroKesken()){						
 						try {
-							System.out.println("Odotetaan pelaaja 1:sen siirtoa...");
+							//System.out.println("Odotetaan pelaaja 1:sen siirtoa...");
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -199,7 +196,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					while(peli.getPelaaja2().onkoVuoroKesken()){
 						//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
 						try {
-							System.out.println("Odotetaan pelaaja 2:sen siirtoa...");
+							//System.out.println("Odotetaan pelaaja 2:sen siirtoa...");
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -225,14 +222,6 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				
 			}
 			
-			else if(peli.getPelinTila() == PelinTila.ERAN_LOPPU){
-				System.out.println("Pelin er‰ loppui. Resetoidaan peli");
-				peli.resetgame();
-				peli.getPelaaja1().resetMyGUI();
-				peli.getPelaaja2().resetMyGUI();
-				peli.pelinTila = PelinTila.PELIN_ALOITUS;
-				
-			}
 			else if(peli.getPelinTila() == PelinTila.PELI_OHI){
 				peli.lopetaPeli();
 			}

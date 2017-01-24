@@ -10,10 +10,7 @@ public class PelaajaToteuttaja {
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
-		// TODO Auto-generated method stub
 		RistinollaPalvelinIF ristinollaPalvelin = (RistinollaPalvelinIF) Naming.lookup("rmi://localhost/RistinollaPalvelin");	
 		Pelaaja pelaaja = new Pelaaja(ristinollaPalvelin);
-		//Thread pelaajaSaie = new Thread(pelaaja);
-		//pelaajaSaie.start();
 	}
 }

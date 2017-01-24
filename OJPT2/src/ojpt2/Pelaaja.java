@@ -95,13 +95,13 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	@Override
 	public void voitto() throws RemoteException {
 		voitot++;
-		gui.UpdateTextArea("Voitit pelin: " + voitot + ". Aloitetaan uusi erä");
+		gui.UpdateTextArea("Voitit pelin.");
 		vuoroKesken = false;
 		voiPaivittaa = false;
 	}
 	@Override
 	public void havio() throws RemoteException{
-		gui.UpdateTextArea("Hävisit pelin " + (voitot + 1) + ". Aloitetaan uusi erä");
+		gui.UpdateTextArea("Hävisit pelin.");
 		vuoroKesken = false;
 		voiPaivittaa = false;
 	}

@@ -98,7 +98,7 @@ public class GUI extends Thread {
 		buttoncc = new JButton("9");
 		buttonextraa = new JButton("Stop");
 		buttonextrab = new JButton("");
-		buttonextrac = new JButton("Reset");
+		buttonextrac = new JButton("");
 		
 		//Tallenetaan nappuloiden sijainti muistiin
 		//Painikkeiden sijainnit vastaavat ristinollan 3x3 taulukkoa
@@ -125,17 +125,6 @@ public class GUI extends Thread {
 		klikatutPainikkeet[2][0] = false;
 		klikatutPainikkeet[2][1] = false;
 		klikatutPainikkeet[2][2] = false;
-
-		// Nappulat ikkunan sisälle
-		/*window.add(buttonaa);
-		window.add(buttonab);
-		window.add(buttonac);
-		window.add(buttonba);
-		window.add(buttonbb);
-		window.add(buttonbc);
-		window.add(buttonca);
-		window.add(buttoncb);
-		window.add(buttoncc);*/
 		
 		window.add(painikkeet[0][0]);
 		window.add(painikkeet[0][1]);
@@ -313,16 +302,6 @@ public class GUI extends Thread {
 				}
 			}
 		}
-		
-		/*buttonaa.setEnabled(true);
-		buttonab.setEnabled(true);
-		buttonac.setEnabled(true);
-		buttonba.setEnabled(true);
-		buttonbb.setEnabled(true);
-		buttonbc.setEnabled(true);
-		buttonca.setEnabled(true);
-		buttoncb.setEnabled(true);
-		buttoncc.setEnabled(true);*/
 	}
 	public void DisableButtons() {;
 		for(int i = 0; i < painikkeet.length; i++){
@@ -363,19 +342,6 @@ public class GUI extends Thread {
 		buttoncount = 0;
 		DisableButtons();
 	}
-	/*private void CheckWin() {
-		if (this.game.isWin()[0].equalsIgnoreCase("YES")) { // Peli on voitettu
-			if (this.game.isWin()[1].equalsIgnoreCase("X")) { // X on voittanut
-				this.DisableButtons();
-				this.UpdateTextArea("X voitti "+this.gamenumber+". pelin");
-				this.gamenumber++;
-			} else { // O on voittanut
-				this.DisableButtons();
-				this.UpdateTextArea("O voitti "+this.gamenumber+". pelin");
-				this.gamenumber++;
-			}
-		}
-	}*/
 	private String whichmark() {
 		if (oorx) {
 			return "O";
