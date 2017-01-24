@@ -33,7 +33,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		pelaajaID++;
 	}
 
-	/*@Override
+	@Override
 	public void aloitaPeli(TicTacToeLogic peli) throws RemoteException {	
 		peli.getPelaaja1().alustaGUI();
 		peli.getPelaaja2().alustaGUI();
@@ -41,7 +41,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		System.out.println("Tuli aloitaPeli-metodiin");
 		
 		peli.aloitaPeli();		
-	}*/
+	}
 
 	//Metodi joka palauttaa pelin annetun peliID:n mukaan
 	public TicTacToeLogic getPeli(int peliID) throws RemoteException {
@@ -75,8 +75,6 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		if(peli.getPelaajienMaara() < 2){ 
 			peli.lisaaPelaaja(pelaaja);
 			
-			pelaaja.alustaGUI();
-			
 			if(peli.getPelaajienMaara() == 1){
 				peli.pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
 			}
@@ -84,8 +82,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			//Jos pelaajan lisäämisen jälkeen pelissä on kaksi pelaajaa niin peli voidaan
 			//aloittaa ja luodaan samalla uusi tyhjä pelihuone
 			else if(peli.getPelaajienMaara() == 2){
-				//aloitaPeli(peli);
-				peli.aloitaPeli();
+				aloitaPeli(peli);
+				//peli.aloitaPeli();
 				luoUusiPeli();					
 			}
 			
@@ -156,7 +154,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					peli.lisaaSiirto(peli.getPelaaja1().lahetaViimeisinSiirtoni()); 
 					
 					//Debuggausta varten
-					System.out.println("Pelaaj1 päivitti pelitilanteen päivitetty. Pelitilanne on nyt:");
+					System.out.println("Pelaaja1 päivitti pelitilanteen päivitetty. Pelitilanne on nyt:");
 					System.out.println("------------------");
 					
 					//Debuggausta varten, katsotaan onko pelitilanne muuttunut
