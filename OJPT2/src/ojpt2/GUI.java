@@ -37,7 +37,6 @@ public class GUI extends Thread {
 	private GridLayout manager = new GridLayout(5,3);
 	private boolean oorx = true; // True aloitetaan O:lla
 	private int buttoncount = 0;
-	//private TicTacToeLogic game;
 	private int gamenumber = 1;
 	private boolean debug = true; // debug rivit p‰‰lle/pois
 	private boolean isRunning = true;
@@ -156,115 +155,115 @@ public class GUI extends Thread {
 		buttonaa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[0][0] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[0][0] = whichmark();
 				//placexor(0, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 0 "+whichmark());
 				ChangeButton(buttonaa);
 				buttonaa.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[0][0] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttonab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[0][1] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[0][1] = whichmark();
 				//placexor(0, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 1 "+whichmark());
 				ChangeButton(buttonab);
 				buttonab.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[0][1] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttonac.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[0][2] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[0][2] = whichmark();
 				//placexor(0, 2, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 2 "+whichmark());
 				ChangeButton(buttonac);
 				buttonac.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[0][2] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttonba.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[1][0] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[1][0] = whichmark();
 				//placexor(1, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 0 "+whichmark());
 				ChangeButton(buttonba);
 				buttonba.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[1][0] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttonbb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[1][1] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[1][1] = whichmark();
 				//placexor(1, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 1 "+whichmark());
 				ChangeButton(buttonbb);
 				buttonbb.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[1][1] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttonbc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[1][2] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[1][2] = whichmark();
 				//placexor(1, 2, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 2 "+whichmark());
 				ChangeButton(buttonbc);
 				buttonbc.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[1][2] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttonca.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[2][0] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[2][0] = whichmark();
 				//placexor(2, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 2 0 "+whichmark());
 				ChangeButton(buttonca);
 				buttonca.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[2][0] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttoncb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[2][1] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[2][1] = whichmark();
 				//placexor(2, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 2 1 "+whichmark());
 				ChangeButton(buttoncb);
 				buttoncb.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[2][1] = whichmark();
 				buttoncount++;
 			}          
 		});
 		buttoncc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				klikatutPainikkeet[2][2] = true;
+				viimeisinSiirto = new String[3][3];
+				viimeisinSiirto[2][2] = whichmark();
 				//placexor(2, 2, whichmark());
 				ChangeButton(buttoncc);				
 				buttoncc.setEnabled(false);
-				viimeisinSiirto = new String[3][3];
-				viimeisinSiirto[2][2] = whichmark();
 				buttoncount++;
 			}          
 		});
@@ -306,12 +305,10 @@ public class GUI extends Thread {
 		}
 	}
 	public void EnableButtons() {
-		System.out.println("T‰m‰ tulee EnableButton - metodista");
 		for(int i = 0; i < painikkeet.length; i++){
 			for(int j = 0; j < painikkeet[i].length; j++){
 				System.out.println(painikkeet[i][j].getName() + " " + klikatutPainikkeet[i][j]);
 				if(klikatutPainikkeet[i][j] == false){
-					System.out.println("tuli if-osioon");
 					painikkeet[i][j].setEnabled(true);
 				}
 			}
@@ -327,16 +324,13 @@ public class GUI extends Thread {
 		buttoncb.setEnabled(true);
 		buttoncc.setEnabled(true);*/
 	}
-	public void DisableButtons() {
-		System.out.println("T‰m‰ tulee DisableButton - metodista");
+	public void DisableButtons() {;
 		for(int i = 0; i < painikkeet.length; i++){
 			for(int j = 0; j < painikkeet[i].length; j++){
 				System.out.println(painikkeet[i][j].getName() + " " + klikatutPainikkeet[i][j]);
 				if(klikatutPainikkeet[i][j] == false){
-					System.out.println("tuli if-osioon");
 					painikkeet[i][j].setEnabled(false);
 				}
-				
 			}
 		}
 		
@@ -351,6 +345,11 @@ public class GUI extends Thread {
 		buttoncc.setEnabled(false);*/
 	}
 	public void ResetGUI() {
+		for(int i = 0; i < klikatutPainikkeet.length; i++){
+			for(int j = 0; j < klikatutPainikkeet[i].length; j++){
+				klikatutPainikkeet[i][j] = false;
+			}
+		}
 		buttonaa.setText("1");
 		buttonab.setText("2");
 		buttonac.setText("3");
@@ -362,6 +361,7 @@ public class GUI extends Thread {
 		buttoncc.setText("9");
 		this.oorx = true; // O Aloittaa aina pelin
 		buttoncount = 0;
+		DisableButtons();
 	}
 	/*private void CheckWin() {
 		if (this.game.isWin()[0].equalsIgnoreCase("YES")) { // Peli on voitettu
@@ -383,10 +383,6 @@ public class GUI extends Thread {
 			return "X";
 		}
 	}
-	
-	/*public void setGame(TicTacToeLogic game){
-		this.game = game;
-	}*/
 	
 	public void teeVastustajanSiirto(String[][] peliTilanne){
 			

@@ -82,9 +82,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			//Jos pelaajan lis‰‰misen j‰lkeen peliss‰ on kaksi pelaajaa niin peli voidaan
 			//aloittaa ja luodaan samalla uusi tyhj‰ pelihuone
 			else if(peli.getPelaajienMaara() == 2){
-				aloitaPeli(peli);
-				//peli.aloitaPeli();
-				luoUusiPeli();					
+				luoUusiPeli();
+				aloitaPeli(peli);					
 			}
 			
 			return peliID;
@@ -104,6 +103,30 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		peli.pelinTila = PelinTila.PELIN_ALOITUS;
 	}
 
+	@Override
+	public void tarkistaVoitto(int peliID) throws RemoteException {
+		
+		System.out.println("Tuli tarkista voitto - metodiin");
+		TicTacToeLogic peli = this.getPeli(peliID);
+		
+			if(peli.isWin() == "pelaaja1"){
+				System.out.println("Pelaaja1 voitti pelin");
+				peli.getPelaaja1().voitto();
+				peli.getPelaaja2().havio();
+				peli.pelinTila = PelinTila.ERAN_LOPPU; 
+				peli.run();
+				//paivitaPelia(peli);
+			}
+			else if(peli.isWin() == "pelaaja2"){
+				System.out.println("Pelaaja2 voitti pelin");
+				peli.getPelaaja2().voitto();
+				peli.getPelaaja1().havio();
+				peli.pelinTila = PelinTila.ERAN_LOPPU; 
+				peli.run();
+				//paivitaPelia(peli);
+			}
+	}
+	
 	@Override
 	//Metodi joka poistaa pelin jos pelaaja1 tai pelaaja2 poistuu pelist‰
 	public void poistaPeli(TicTacToeLogic peli) throws RemoteException {
@@ -141,8 +164,8 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					peli.getPelaaja1().vastaanOtaPeliTilanne(peli.getPeliTilanne());
 					System.out.println("Pelaaja 1:lle l‰hetetty pelin nykyinen tilanne");
 					
-					while(peli.getPelaaja1().onkoVuoroKesken()){
-						//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
+					//Ei tehd‰ mit‰‰n kun pelaajan vuoro on kesken
+					while(peli.getPelaaja1().onkoVuoroKesken()){						
 						try {
 							System.out.println("Odotetaan pelaaja 1:sen siirtoa...");
 							Thread.sleep(1000);
@@ -154,14 +177,12 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					peli.lisaaSiirto(peli.getPelaaja1().lahetaViimeisinSiirtoni()); 
 					
 					//Debuggausta varten
-					System.out.println("Pelaaja1 p‰ivitti pelitilanteen p‰ivitetty. Pelitilanne on nyt:");
+					System.out.println("Pelaaja1 p‰ivitti pelitilanteen. Pelitilanne on nyt:");
 					System.out.println("------------------");
 					
 					//Debuggausta varten, katsotaan onko pelitilanne muuttunut
 					for(int i = 0; i < peli.getPeliTilanne().length; i++){
-						for(int j = 0; j < peli.getPeliTilanne()[i].length; j++){
-							System.out.println("Paikassa: " + i + " " + j + " " + peli.getPeliTilanne()[i][j]);
-						}
+						System.out.println(" [" + peli.getPeliTilanne()[i][0] + "] " + " [" + peli.getPeliTilanne()[i][1] + "] " + " [" + peli.getPeliTilanne()[i][2] + "] " );
 					}
 					
 					System.out.println("------------------"); 
@@ -188,14 +209,12 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 					peli.lisaaSiirto(peli.getPelaaja2().lahetaViimeisinSiirtoni()); 
 					
 					//Debuggausta varten
-					System.out.println("Pelaaj2 p‰ivitti pelitilanteen p‰ivitetty. Pelitilanne on nyt:");
+					System.out.println("Pelaaja2 p‰ivitti pelitilanteen. Pelitilanne on nyt:");
 					System.out.println("------------------");
 					
 					//Debuggausta varten, katsotaan onko pelitilanne muuttunut
 					for(int i = 0; i < peli.getPeliTilanne().length; i++){
-						for(int j = 0; j < peli.getPeliTilanne()[i].length; j++){
-							System.out.println("Paikassa: " + i + " " + j + " " + peli.getPeliTilanne()[i][j]);
-						}
+						System.out.println(" [" + peli.getPeliTilanne()[i][0] + "] " + " [" + peli.getPeliTilanne()[i][1] + "] " + " [" + peli.getPeliTilanne()[i][2] + "] " );
 					}
 					
 					System.out.println("------------------"); 
@@ -207,7 +226,11 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 			}
 			
 			else if(peli.getPelinTila() == PelinTila.ERAN_LOPPU){
-				
+				System.out.println("Pelin er‰ loppui. Resetoidaan peli");
+				peli.resetgame();
+				peli.getPelaaja1().resetMyGUI();
+				peli.getPelaaja2().resetMyGUI();
+				peli.pelinTila = PelinTila.PELIN_ALOITUS;
 				
 			}
 			else if(peli.getPelinTila() == PelinTila.PELI_OHI){
@@ -218,5 +241,4 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 		poistaPeli(peli);
 		
 	}
-
 }

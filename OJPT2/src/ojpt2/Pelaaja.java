@@ -13,7 +13,6 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	private boolean pelaakoViela;
 	private int peliID;
 	private int voitot = 0;
-	private int virheet = 0;
 	private String[][] peliTilanne;
 	private boolean vuoroKesken;
 	private boolean voiPaivittaa = false;
@@ -31,7 +30,6 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		this.ristinollaPalvelin = ristinollaPalvelin;
 		gui = new GUI();
 		gui.DisableButtons();
-		//gui.UpdateTextAreab("Vuoroja ei jaettu");
 		peliTilanne = new String[3][3];
 		pelaakoViela = true;
 		vuoroKesken = false;
@@ -41,6 +39,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		pelaajaSaie.start();
 		ristinollaPalvelin.rekisteroiPelaaja(this);
 		peliID = ristinollaPalvelin.liityPeliin(this);
+		System.out.println("Minun peliID:ni on: " + peliID);
 		System.out.println("Pelaajan luonti ja palvelimeen yhdist‰minen onnistui.");
 
 	}
@@ -75,6 +74,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		System.out.println("Tuli alustaGUI-metodiin");
 		gui.UpdateTextArea("Peli alustettu");
 		gui.UpdateTextArea("----------------------");
+		gui.DisableButtons();
 	}
 	
 	@Override
@@ -95,6 +95,15 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	@Override
 	public void voitto() throws RemoteException {
 		voitot++;
+		gui.UpdateTextArea("Voitit pelin: " + voitot + ". Aloitetaan uusi er‰");
+		vuoroKesken = false;
+		voiPaivittaa = false;
+	}
+	@Override
+	public void havio() throws RemoteException{
+		gui.UpdateTextArea("H‰visit pelin " + (voitot + 1) + ". Aloitetaan uusi er‰");
+		vuoroKesken = false;
+		voiPaivittaa = false;
 	}
 	
 	@Override
@@ -127,6 +136,8 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		//Tehd‰‰n vastustajan siirto pelaajan omaan GUI:hin
 		gui.UpdateTextAreab(vuoroTilanne.toString());
 		gui.teeVastustajanSiirto(peliTilanne); 
+		
+		ristinollaPalvelin.tarkistaVoitto(peliID);
 			
 		while(vuoroKesken){
 			

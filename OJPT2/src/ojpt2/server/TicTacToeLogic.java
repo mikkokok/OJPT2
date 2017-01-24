@@ -63,27 +63,30 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 	public void placemark(int row, int column, String xo) {
 		game[row][column] = xo;
 	} // placemark
-	public String[] isWin() {
-		String[] winning = new String[2];
-		winning[0] = "NO";
-		winning[1] = "XO";
+	public String isWin() {
+		//String[] winning = new String[2];
+		String winner = "none";
+		//winning[0] = "NO";
+		//winning[1] = "XO";
 		if (checkrows("X") || checkcolumns("X") || checkcornertocorner("X")) {
-			winning[0] = "YES";
-			winning[1] = "X";
+			//winning[0] = "YES";
+			//winning[1] = "X";
+			winner = "pelaaja2";
 			if (debug) {
 				printgame();
 			}
 
 		} 
 		if (checkrows("O") || checkcolumns("O") || checkcornertocorner("O")) {
-			winning[0] = "YES";
-			winning[1] = "O";
+			//winning[0] = "YES";
+			//winning[1] = "O";
+			winner = "pelaaja1";
 			if (debug) {
 				printgame();	
 			}
 
 		}
-		return winning;
+		return winner;
 	}
 	private boolean checkrows(String xo) {
 		boolean result = false;
@@ -157,7 +160,6 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 				}
 			}
 		}
-		//this.game = game;
 	}
 	
 	public int getPelaajienMaara(){

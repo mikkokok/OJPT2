@@ -15,4 +15,5 @@ public interface RistinollaPalvelinIF extends Remote {
 	void paivitaPelia(TicTacToeLogic peli) throws RemoteException;
 	void poistaPeli(TicTacToeLogic peli) throws RemoteException;
 	void resetGUI(TicTacToeLogic peli) throws RemoteException;
+	void tarkistaVoitto(int peliID) throws RemoteException;
 }
