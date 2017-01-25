@@ -202,7 +202,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 	 * kumpi pelaaja aloitti 
 	 * @return true jos pelaaja1 aloitti
 	 */
-	public boolean AloittikoPelaaja1(){
+	public boolean aloittikoPelaaja1(){
 		return this.pelaaja1Aloitus;
 	}
 	

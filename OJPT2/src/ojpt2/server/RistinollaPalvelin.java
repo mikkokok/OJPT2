@@ -119,7 +119,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 
 		//Mikäli voittaja löytyy niin lähetetään pelaajille tieto siitä
 		//kumpi voitti ja asetetaan pelin tila päättyneeksi
-		if(peli.AloittikoPelaaja1()){
+		if(peli.aloittikoPelaaja1()){
 			if(peli.isWin().equals("O")){
 				System.out.println("Pelaaja1 voitti pelin");
 				peli.getPelaaja1().voitto();
