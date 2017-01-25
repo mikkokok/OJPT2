@@ -5,29 +5,25 @@ package ojpt2.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Random;
-
-import ojpt2.Pelaaja;
-import ojpt2.Pelaaja.VuoroTilanne;
 import ojpt2.PelaajaIF;
-import ojpt2.server.TicTacToeLogic.PelinTila;
 
 /**
- * @author Mikko Kokkonen
+ * @author Mikko Kokkonen ja Ville Vahtera
  *
  */
 public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	private String[][] game;
-	private boolean xoro = true; // True jos O, false jos X
 	private boolean debug = false; 
 	
 	private RistinollaPalvelin ristinollaPalvelin;
 	private PelaajaIF pelaaja1;
 	private PelaajaIF pelaaja2;
 	private boolean peliKaynnissa;
+	private boolean pelaaja1Aloitus; //true jos pelaaja1 aloittaa pelin ja false jos pelaaja2 aloittaa
 	
+	//Pelin mahdolliset tilat
 	public enum PelinTila {
 		EI_PELAAJIA,
 		ODOTETAAN_TOISTA_PELAAJAA,
@@ -37,8 +33,13 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		PELI_OHI
 	}
 	
-	public PelinTila pelinTila;
+	public PelinTila pelinTila; //Muuttuja joka m‰‰ritt‰‰ miss‰ tilassa peli on
 	
+	/**
+	 * 
+	 * @param ristinollaPalvelin
+	 * @throws RemoteException
+	 */
 	public TicTacToeLogic(RistinollaPalvelin ristinollaPalvelin) throws RemoteException {
 		super();
 		game = new String[3][3]; // 3x3 peli
@@ -53,6 +54,10 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		pelinTila = PelinTila.EI_PELAAJIA;
 		
 	} // Konstruktori
+	
+	/**
+	 * Metodi joka resetoi pelin tilanteen
+	 */
 	public void resetgame() {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -60,27 +65,33 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 			}
 		}
 	}
+	
+	/**
+	 * Metodi joka lis‰‰ siirron pelitilanteeseen
+	 * @param row
+	 * @param column
+	 * @param xo
+	 */
 	public void placemark(int row, int column, String xo) {
 		game[row][column] = xo;
 	} // placemark
+	
+	/**
+	 * Metodi joka tarkistaa onko peli voitettu
+	 * @return
+	 */
 	public String isWin() {
-		//String[] winning = new String[2];
 		String winner = "none";
-		//winning[0] = "NO";
-		//winning[1] = "XO";
+
 		if (checkrows("X") || checkcolumns("X") || checkcornertocorner("X")) {
-			//winning[0] = "YES";
-			//winning[1] = "X";
-			winner = "pelaaja2";
+			winner = "X";
 			if (debug) {
 				printgame();
 			}
 
 		} 
 		if (checkrows("O") || checkcolumns("O") || checkcornertocorner("O")) {
-			//winning[0] = "YES";
-			//winning[1] = "O";
-			winner = "pelaaja1";
+			winner = "O";
 			if (debug) {
 				printgame();	
 			}
@@ -88,6 +99,12 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 		return winner;
 	}
+	
+	/**
+	 * Metodi joka tarkistaa onko vaakariveiss‰ on 3 X:‰‰ tai O:ta
+	 * @param xo
+	 * @return
+	 */
 	private boolean checkrows(String xo) {
 		boolean result = false;
 		if (game[0][0].equalsIgnoreCase(xo) && game[0][1].equalsIgnoreCase(xo) && game[0][2].equalsIgnoreCase(xo)) {
@@ -101,6 +118,12 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 		return result;
 	}
+	
+	/**
+	 * Metodi joka tarkistaa onko pystyriveiss‰ 3 X:‰‰ tai O:ta
+	 * @param xo
+	 * @return
+	 */
 	private boolean checkcolumns(String xo) {
 		boolean result = false;
 		if (game[0][0].equalsIgnoreCase(xo) && game[1][0].equalsIgnoreCase(xo) && game[2][0].equalsIgnoreCase(xo)) {
@@ -114,6 +137,12 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 		return result;
 	}
+	
+	/**
+	 * Metodi joka tarkistaa onko kulmista kulmaan 3 X:‰‰ tai O:ta
+	 * @param xo
+	 * @return
+	 */
 	private boolean checkcornertocorner(String xo) {
 		boolean result = false;
 		if (game[0][0].equalsIgnoreCase(xo) && game[1][1].equalsIgnoreCase(xo) && game[2][2].equalsIgnoreCase(xo)) {
@@ -124,6 +153,10 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 		return result;
 	}
+	
+	/**
+	 * Metodi joka tulostaa pelintilanteen
+	 */
 	private void printgame() { // For debugging
 		for (int i = 0; i < 3; i++) {
 			System.out.println("");
@@ -134,6 +167,10 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		System.out.println("");
 	}
 	
+	/**
+	 * Metodi joka lis‰‰ pelaaja peliin ja vaihtaa pelin tilaa
+	 * @param pelaaja
+	 */
 	public void lisaaPelaaja(PelaajaIF pelaaja) {
 		if(pelaaja1 == null){
 			pelaaja1 = pelaaja;
@@ -148,20 +185,53 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 		}
 	}
 	
+	/**
+	 * Metodi joka asettaa pelille sen kumpi pelaaja aloitti
+	 * @param pelaaja1Aloitus
+	 */
+	public void setKumpiAloitti(boolean pelaaja1Aloitus){
+		if(pelaaja1Aloitus){
+			this.pelaaja1Aloitus = true;
+		}
+		else
+			this.pelaaja1Aloitus = false;
+	}
+	
+	/**
+	 * Metodi joka palauttaa tiedon siit‰,
+	 * kumpi pelaaja aloitti 
+	 * @return true jos pelaaja1 aloitti
+	 */
+	public boolean AloittikoPelaaja1(){
+		return this.pelaaja1Aloitus;
+	}
+	
+	/**
+	 * Metodi joka palauttaa pelin tilanteen
+	 * @return
+	 */
 	public String[][] getPeliTilanne(){
 		return game;
 	}
 	
-	public void lisaaSiirto(String[][] peliTilanne){
+	/**
+	 * Metodi joka lis‰‰ siirron pelitilanteeseen
+	 * @param peliTilanne
+	 */
+	public void lisaaSiirto(String[][] viimeisinSiirto){
 		for(int i = 0; i < this.game.length; i++){
 			for(int j = 0; j < this.game[i].length; j++){
-				if(peliTilanne[i][j] != null){
-					placemark(i, j, peliTilanne[i][j]);
+				if(viimeisinSiirto[i][j] != null){
+					placemark(i, j, viimeisinSiirto[i][j]);
 				}
 			}
 		}
 	}
 	
+	/**
+	 * Metodi joka palauttaa pelaajien lukum‰‰r‰n
+	 * @return
+	 */
 	public int getPelaajienMaara(){
 		if(pelaaja1 == null)
 			return 0;
@@ -171,39 +241,74 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 			return 2;
 	}
 	
+	/**
+	 * Metodi joka palauttaa pelaaja1:sen
+	 * @return
+	 */
 	public PelaajaIF getPelaaja1(){
 		return pelaaja1;
 	}
 	
+	/**
+	 * Metodi joka palauttaa pelaaja2:sen
+	 * @return
+	 */
 	public PelaajaIF getPelaaja2(){
 		return pelaaja2;
 	}
 	
+	/**
+	 * Metodi joka palauttaa tiedon siit‰
+	 * onko peli k‰ynniss‰
+	 * @return
+	 */
 	public boolean getPeliKaynnissa(){
 		return peliKaynnissa;
 	}
 	
+	/**
+	 * Metodi joka palauttaa pelin tilan
+	 * @return
+	 */
 	public PelinTila getPelinTila(){
 		return pelinTila;
 	}
 	
+	/**
+	 * Metodi joka k‰ynnist‰‰ pelin
+	 */
 	public void aloitaPeli(){
 		peliKaynnissa = true;
-		System.out.println("Tuli Peli-luokan aloitaPeli-metodiin");
 		run();
 	}
 	
+	/**
+	 * Metodi joka lopettaa pelin
+	 */
 	public void lopetaPeli(){
 		peliKaynnissa = false;
 	}
 	
+	/**
+	 * run-metodi, jossa kutsutaan palvelinta p‰ivitt‰m‰‰n peli‰ niin 
+	 * kauan kun peli on k‰ynniss‰ ja jos peli ei ole k‰ynniss‰ niin
+	 * pyydet‰‰n palvelinta poistamaan peli
+	 */
 	@Override
 	public void run() {
+		while(peliKaynnissa){
+			try {
+				ristinollaPalvelin.paivitaPelia(this);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+
+			}
+		}
+		
 		try {
-			ristinollaPalvelin.paivitaPelia(this);
+			ristinollaPalvelin.poistaPeli(this);
 		} catch (RemoteException e) {
 			e.printStackTrace();
-
 		}
 
 	}

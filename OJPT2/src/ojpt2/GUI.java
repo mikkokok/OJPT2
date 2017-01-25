@@ -6,15 +6,12 @@ package ojpt2;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
 import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import ojpt2.server.TicTacToeLogic;
-
 /**
- * @author Mikko Kokkonen
+ * @author Mikko Kokkonen ja Ville Vahtera
  *
  */
 public class GUI extends Thread {
@@ -37,11 +34,7 @@ public class GUI extends Thread {
 	private GridLayout manager = new GridLayout(5,3);
 	private boolean oorx = true; // True aloitetaan O:lla
 	private int buttoncount = 0;
-	private int gamenumber = 1;
 	private boolean debug = true; // debug rivit p‰‰lle/pois
-	private boolean isRunning = true;
-	private boolean empty = false;
-	
 	private JButton[][] painikkeet;
 	private boolean[][] klikatutPainikkeet;
 	private String[][] viimeisinSiirto;
@@ -74,6 +67,9 @@ public class GUI extends Thread {
 		tredi.start();
 	}
 	
+	/**
+	 * Metodi joka alustaa tekstilaatikot
+	 */
 	private void TextAreaInit() {
 		textarea = new TextArea();
 		textareab = new TextArea();
@@ -85,6 +81,9 @@ public class GUI extends Thread {
 		window.add(textareac, BorderLayout.PAGE_END);
 	}
 	
+	/**
+	 * Metodi joka alustaa painikkeet
+	 */
 	private void ButtonInit() {
 		// Luodaan nappulat ristinollaa varten
 		buttonaa = new JButton("1");
@@ -104,37 +103,22 @@ public class GUI extends Thread {
 		//Painikkeiden sijainnit vastaavat ristinollan 3x3 taulukkoa
 		painikkeet[0][0] = buttonaa;
 		painikkeet[0][1] = buttonab;
-		painikkeet[0][2] = buttonac;
-		
+		painikkeet[0][2] = buttonac;		
 		painikkeet[1][0] = buttonba;
 		painikkeet[1][1] = buttonbb;
-		painikkeet[1][2] = buttonbc;
-		
+		painikkeet[1][2] = buttonbc;		
 		painikkeet[2][0] = buttonca;
 		painikkeet[2][1] = buttoncb;
 		painikkeet[2][2] = buttoncc;
 		
-		klikatutPainikkeet[0][0] = false;
-		klikatutPainikkeet[0][1] = false;
-		klikatutPainikkeet[0][2] = false;
-		
-		klikatutPainikkeet[1][0] = false;
-		klikatutPainikkeet[1][1] = false;
-		klikatutPainikkeet[1][2] = false;
-		
-		klikatutPainikkeet[2][0] = false;
-		klikatutPainikkeet[2][1] = false;
-		klikatutPainikkeet[2][2] = false;
-		
-		window.add(painikkeet[0][0]);
-		window.add(painikkeet[0][1]);
-		window.add(painikkeet[0][2]);
-		window.add(painikkeet[1][0]);
-		window.add(painikkeet[1][1]);
-		window.add(painikkeet[1][2]);
-		window.add(painikkeet[2][0]);
-		window.add(painikkeet[2][1]);
-		window.add(painikkeet[2][2]);
+		//Lis‰t‰‰n painikkeet ikkunaan ja samalla asetetaan ettei mit‰‰n
+		//painiketta olla viel‰ klikattu
+		for(int i = 0; i < painikkeet.length; i++){
+			for(int j = 0; j < painikkeet[i].length; j++){
+				window.add(painikkeet[i][j]);
+				klikatutPainikkeet[i][j] = false;
+			}
+		}
 		
 		window.add(buttonextraa);
 		window.add(buttonextrab);
@@ -146,7 +130,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[0][0] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][0] = whichmark();
-				//placexor(0, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 0 "+whichmark());
 				ChangeButton(buttonaa);
@@ -159,7 +142,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[0][1] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][1] = whichmark();
-				//placexor(0, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 1 "+whichmark());
 				ChangeButton(buttonab);
@@ -172,7 +154,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[0][2] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[0][2] = whichmark();
-				//placexor(0, 2, whichmark());
 				if (debug)
 					System.out.println("Paikka 0 2 "+whichmark());
 				ChangeButton(buttonac);
@@ -185,7 +166,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[1][0] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][0] = whichmark();
-				//placexor(1, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 0 "+whichmark());
 				ChangeButton(buttonba);
@@ -198,7 +178,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[1][1] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][1] = whichmark();
-				//placexor(1, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 1 "+whichmark());
 				ChangeButton(buttonbb);
@@ -211,7 +190,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[1][2] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[1][2] = whichmark();
-				//placexor(1, 2, whichmark());
 				if (debug)
 					System.out.println("Paikka 1 2 "+whichmark());
 				ChangeButton(buttonbc);
@@ -224,7 +202,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[2][0] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][0] = whichmark();
-				//placexor(2, 0, whichmark());
 				if (debug)
 					System.out.println("Paikka 2 0 "+whichmark());
 				ChangeButton(buttonca);
@@ -237,7 +214,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[2][1] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][1] = whichmark();
-				//placexor(2, 1, whichmark());
 				if (debug)
 					System.out.println("Paikka 2 1 "+whichmark());
 				ChangeButton(buttoncb);
@@ -250,7 +226,6 @@ public class GUI extends Thread {
 				klikatutPainikkeet[2][2] = true;
 				viimeisinSiirto = new String[3][3];
 				viimeisinSiirto[2][2] = whichmark();
-				//placexor(2, 2, whichmark());
 				ChangeButton(buttoncc);				
 				buttoncc.setEnabled(false);
 				buttoncount++;
@@ -259,12 +234,10 @@ public class GUI extends Thread {
 		buttonextrac.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				EnableButtons();
-				ResetGUI();
 			}          
 		});
 		buttonextraa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//isRunning = false;
 				if (debug)
 					System.err.println("Stopping GUI");
 				System.exit(1);
@@ -273,18 +246,27 @@ public class GUI extends Thread {
 		});
 	}
 	
+	/**
+	 * Metodi joka p‰ivitt‰‰ ensimm‰ist‰ tekstilaatikkoa
+	 * @param text
+	 */
 	public void UpdateTextArea(String text) {
 		textarea.append(text + "\n");
 	}
+	
+	/**
+	 * Metodi joka p‰ivitt‰‰ toista tekstilaatikkoa
+	 * @param text
+	 */
 	public void UpdateTextAreab(String text) {
 		textareab.setText(text);
-		//textareab.append(text + "\n");
 	}
-	public void placexor(int row, int column, String xo) {
-		//this.game.placemark(row, column, xo);
-	}
+	
+	/**
+	 * Metodi joka muuttaa painikkeet tekstin joko X tai O
+	 * @param button
+	 */
 	private void ChangeButton(JButton button) {
-		//this.CheckWin(); // Tarkistetaan voitto jokaisen nappulan painalluksen j‰lkeen
 		if (oorx) {
 			button.setText("O");
 			oorx = false;
@@ -293,55 +275,37 @@ public class GUI extends Thread {
 			oorx = true;
 		}
 	}
+	/**
+	 * Metodi joka ottaa k‰yttˆˆn ne painikkeet,
+	 * joita ei olla viel‰ klikattu
+	 */
 	public void EnableButtons() {
 		for(int i = 0; i < painikkeet.length; i++){
 			for(int j = 0; j < painikkeet[i].length; j++){
-				System.out.println(painikkeet[i][j].getName() + " " + klikatutPainikkeet[i][j]);
 				if(klikatutPainikkeet[i][j] == false){
 					painikkeet[i][j].setEnabled(true);
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Metodi joka poistaa k‰ytˆst‰ kaikki ne painikkeet,
+	 * jotka eiv‰t ole viel‰ pois k‰ytˆst‰
+	 */
 	public void DisableButtons() {;
 		for(int i = 0; i < painikkeet.length; i++){
 			for(int j = 0; j < painikkeet[i].length; j++){
-				System.out.println(painikkeet[i][j].getName() + " " + klikatutPainikkeet[i][j]);
 				if(klikatutPainikkeet[i][j] == false){
 					painikkeet[i][j].setEnabled(false);
 				}
 			}
 		}
-		
-		/*buttonaa.setEnabled(false);
-		buttonab.setEnabled(false);
-		buttonac.setEnabled(false);
-		buttonba.setEnabled(false);
-		buttonbb.setEnabled(false);
-		buttonbc.setEnabled(false);
-		buttonca.setEnabled(false);
-		buttoncb.setEnabled(false);
-		buttoncc.setEnabled(false);*/
 	}
-	public void ResetGUI() {
-		for(int i = 0; i < klikatutPainikkeet.length; i++){
-			for(int j = 0; j < klikatutPainikkeet[i].length; j++){
-				klikatutPainikkeet[i][j] = false;
-			}
-		}
-		buttonaa.setText("1");
-		buttonab.setText("2");
-		buttonac.setText("3");
-		buttonba.setText("4");
-		buttonbb.setText("5");
-		buttonbc.setText("6");
-		buttonca.setText("7");
-		buttoncb.setText("8");
-		buttoncc.setText("9");
-		this.oorx = true; // O Aloittaa aina pelin
-		buttoncount = 0;
-		DisableButtons();
-	}
+	
+	/**
+	 * @return "X" tai "O"
+	 */
 	private String whichmark() {
 		if (oorx) {
 			return "O";
@@ -350,31 +314,47 @@ public class GUI extends Thread {
 		}
 	}
 	
+	/**
+	 * Metodi joka tekee vastustajan siirron pelaajan omaan GUI:hin
+	 * @param peliTilanne
+	 */
 	public void teeVastustajanSiirto(String[][] peliTilanne){
 			
-		System.out.println("Tuli teeVastustajansiirto metodiin");
-			
-		for(int i = 0; i < peliTilanne.length; i++){
+		for(int i = 0; i < peliTilanne.length; i++){				
+			for(int j = 0; j < peliTilanne[i].length; j++){		
 				
-			for(int j = 0; j < peliTilanne[i].length; j++){
-					
-				System.out.println(peliTilanne[i][j] + " " + painikkeet[i][j].isEnabled());
-					
+				//Mik‰li kierroksessa oleva pelitilanteen alkio on joko X tai O ja alkiota vastaavan
+				//painike on k‰ytˆss‰ niin painetaan kyseist‰ painiketta ja samalla resetoidaan viimeisin siirto
+				//jottei se sekoita pelaajan ja vastustajan siirtoja
 				if(peliTilanne[i][j].equals("X") || peliTilanne[i][j].equals("O") && painikkeet[i][j].isEnabled()){
 					painikkeet[i][j].doClick();
-					resetviimeisinSiirto();
-					System.out.println("Klikkasi painiketta");
-						
+					resetviimeisinSiirto();	
 				}
 			}	
 		}
 	}
-	
+	/**
+	 * Metodi joka palauttaa tiedon pelaajan 
+	 * viimeisimm‰st‰ siirrosta
+	 * @return
+	 */
 	public String[][] getviimeisinSiirto(){
 		return viimeisinSiirto;
 	}
 	
+	/**
+	 * Metodi joka resetoi pelaajan viimeisimm‰n siirron
+	 */
 	public void resetviimeisinSiirto(){
 		viimeisinSiirto = null;
+	}
+	
+	/**
+	 * Metodi joka palauttaa pelaajan 
+	 * siirtojen lukum‰‰r‰n
+	 * @return
+	 */
+	public int getSiirtojenMaara(){
+		return buttoncount;
 	}
 }

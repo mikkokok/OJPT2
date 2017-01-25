@@ -4,27 +4,33 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import ojpt2.server.RistinollaPalvelinIF;
 
+/**
+ * @author Ville Vahtera ja Mikko Kokkonen
+ */
 public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 
 	private static final long serialVersionUID = 1L;
-	
 	private GUI gui;
 	private RistinollaPalvelinIF ristinollaPalvelin;
-	private boolean pelaakoViela;
-	private int peliID;
-	private int voitot = 0;
-	private String[][] peliTilanne;
+	private boolean pelaakoViela; // Muuttuja joka m‰‰rittelee onko pelaaja viel‰ peliss‰ mukana
+	private int peliID; // Muuttuja joka kertoon mihin peliin t‰m‰ pelaaja kuuluu
+	private String[][] peliTilanne; //Muuttuja, joka ottaa palvelimelta vastaan pelin tilanteen
 	private boolean vuoroKesken;
-	private boolean voiPaivittaa = false;
+	private boolean voiPaivittaa = false; // Muuttuja joka m‰‰ritt‰‰ voiko pelaajan k‰yttˆliittym‰‰ muokata
 	
+	//Pelaajan mahdolliset tilanteet vuorojen jaossa
 	public enum VuoroTilanne{
 		VUOROJA_EI_JAETTU,
 		MUN_VUORO,
 		VASTUSTAJAN_VUORO
 	}
 	
-	public VuoroTilanne vuoroTilanne;
+	public VuoroTilanne vuoroTilanne; //Muuttuja joka m‰‰rittelee miss‰ tilassa pelaaja on
 
+	/**
+	 * @param ristinollaPalvelin
+	 * @throws RemoteException
+	 */
 	protected Pelaaja(RistinollaPalvelinIF ristinollaPalvelin) throws RemoteException {
 		super();
 		this.ristinollaPalvelin = ristinollaPalvelin;
@@ -34,22 +40,20 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		pelaakoViela = true;
 		vuoroKesken = false;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
-		gui.UpdateTextAreab(vuoroTilanne.toString());
 		Thread pelaajaSaie = new Thread(this);
 		pelaajaSaie.start();
 		ristinollaPalvelin.rekisteroiPelaaja(this);
 		peliID = ristinollaPalvelin.liityPeliin(this);
-		System.out.println("Minun peliID:ni on: " + peliID);
-		System.out.println("Pelaajan luonti ja palvelimeen yhdist‰minen onnistui.");
-
 	}
 	
-	//Metodi joka p‰ivitt‰‰ pelaajan GUI:ta niin kauan kuin 
-	//pelaaja on peliss‰ mukana.
+	/**
+	 *Metodi joka p‰ivitt‰‰ pelaajan GUI:ta niin kauan kuin 
+	 *pelaaja on peliss‰ mukana ja jos pelaaja on saanut 
+	 *palvelimelta luvan. 
+	 */
 	@Override
 	public void run() {
-		while(pelaakoViela){	
-			
+		while(pelaakoViela){				
 			if(voiPaivittaa){
 				try {
 					paivitaGUI();
@@ -69,14 +73,20 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		System.exit(1);	
 	}
 	
+	/**
+	 * Metodi joka antaa ottaa GUI:n k‰yttˆˆn
+	 */
 	@Override
 	public void alustaGUI() throws RemoteException {
-		System.out.println("Tuli alustaGUI-metodiin");
 		gui.UpdateTextArea("Peli alustettu");
 		gui.UpdateTextArea("----------------------");
 		gui.DisableButtons();
 	}
 	
+	/**
+	 * Metodi joka antaa pelaajalle vuoron ja ottaa
+	 * painikkeet k‰yttˆˆn
+	 */
 	@Override
 	public void otaVuoro() throws RemoteException {
 		vuoroTilanne = VuoroTilanne.MUN_VUORO;
@@ -85,6 +95,10 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		vuoroKesken = true;
 	}
 	
+	/**
+	 * Metodi joka p‰‰tt‰‰ pelaajan vuoron, jolloin
+	 * painikkeet poistetaan k‰ytˆst‰ vastustajan vuoron ajaksi
+	 */
 	@Override
 	public void paataVuoro() throws RemoteException {
 		vuoroTilanne = VuoroTilanne.VASTUSTAJAN_VUORO;
@@ -92,13 +106,19 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		gui.DisableButtons();
 	}
 	
+	/**
+	 * Metodi joka ilmoittaa pelaajalle ett‰ h‰n voitti pelin
+	 */
 	@Override
 	public void voitto() throws RemoteException {
-		voitot++;
 		gui.UpdateTextArea("Voitit pelin.");
 		vuoroKesken = false;
 		voiPaivittaa = false;
 	}
+	
+	/**
+	 * Metodi joka ilmoittaa pelaajalle ett‰ h‰n h‰visi pelin
+	 */
 	@Override
 	public void havio() throws RemoteException{
 		gui.UpdateTextArea("H‰visit pelin.");
@@ -106,61 +126,88 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		voiPaivittaa = false;
 	}
 	
+	/**
+	 * Metodi joka ilmoittaa pelaajalle tasapelist‰
+	 */
 	@Override
-	public void resetMyGUI() throws RemoteException {
-		gui.ResetGUI();
-	}	
+	public void tasapeli() throws RemoteException{
+		gui.UpdateTextArea("Tasapeli");
+		vuoroKesken = false;
+		voiPaivittaa = false;
+	}
 
+	/**
+	 * Metodi joka ilmoittaa ettei pelaaja ole en‰‰
+	 * peliss‰ mukana
+	 */
 	@Override
 	public void poistu() throws RemoteException {
 		pelaakoViela = false;		
 	}
 
+	/**
+	 * Metodi joka palauttaa onko pelaajan vuoro viel‰ kesken
+	 */
 	public boolean onkoVuoroKesken(){
 		return vuoroKesken;
 	}
 
-	//Metodi joka palauttaa sen pelin ID: johon t‰m‰ pelaaja kuuluu
+	/**
+	 * Metodi joka palauttaa sen pelin ID:n,
+	 *  johon t‰m‰ pelaaja kuuluu
+	 */
 	@Override
 	public int getPeliID(){
 		return peliID;
 	}
 	
+	/**
+	 * Metodi joka palauttaa pelaajan tilanteen omasta vuorostaan
+	 */
 	@Override
 	public VuoroTilanne getVuoroTilanne() throws RemoteException {
 		return vuoroTilanne;
 	}
 	
+	/**
+	 * Metodi joka p‰ivitt‰‰ pelaajan GUI:ta pelin edetess‰
+	 */
 	@Override
 	public void paivitaGUI() throws RemoteException {
+		//gui.UpdateTextAreab(vuoroTilanne.toString());
+		
 		//Tehd‰‰n vastustajan siirto pelaajan omaan GUI:hin
-		gui.UpdateTextAreab(vuoroTilanne.toString());
 		gui.teeVastustajanSiirto(peliTilanne); 
 		
-		ristinollaPalvelin.tarkistaVoitto(peliID);
+		//Pyydet‰‰n palvelinta tarkistamaan onko peli voitettu
+		ristinollaPalvelin.tarkistaVoitto(peliID, gui.getSiirtojenMaara());
 			
+		//Silmukka, joka pyˆrii niin kauan kunnes pelaaja on tenyt siirtonsa
 		while(vuoroKesken){
 			
-			//Odotetetaan pelaajan omia muutoksia GUI:hin			
+			//Odotetetaan pelaajan siirtoa			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
+			//Kun pelaaja on tehnyt siirtonsa,
+			//niin asetetaan oma vuoro p‰‰ttyneeksi
 			if(gui.getviimeisinSiirto() != null){
-				System.out.println("Viimeisin siirtoni tallentui v‰liaikaismuuttujaan");
 				vuoroKesken = false;
 				vuoroTilanne = VuoroTilanne.VASTUSTAJAN_VUORO;
 				voiPaivittaa = false;
-				
-				System.out.println("Vuoroni loppui");
 			}	
 		}
 	}
 	
-	//Metodi joka vastaanottaa palvelimelta pelin senhetkisen tilanteen eli
-	//vastustajan viimeisimm‰n siirron
+	/**
+	 * Metodi joka vastaanottaa palvelimelta pelin senhetkisen tilanteen ja
+	 * resetoidaan samalla pelaajan oma viimeisin siirto. Lopuksi kerrotaan
+	 * ett‰ GUI:ta voidaan nyt p‰ivitt‰‰
+	 */
+	
 	@Override
 	public void vastaanOtaPeliTilanne(String[][] peliTilanne) throws RemoteException {
 		this.peliTilanne = peliTilanne;
@@ -169,8 +216,9 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		
 	}
 	
-	//Metodi joka l‰hett‰‰ palvelimelle pelin senhetkisen tilanteen eli
-	//pelaajan oman viimeisimm‰n siirron
+	/**Metodi joka l‰hett‰‰ palvelimelle
+	 * pelaajan viimeisimm‰n siirron
+	 */
 	@Override
 	public String[][] lahetaViimeisinSiirtoni() throws RemoteException {
 		return gui.getviimeisinSiirto();
