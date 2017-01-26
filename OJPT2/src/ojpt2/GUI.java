@@ -360,6 +360,11 @@ public class GUI extends Thread {
 		return buttoncount;
 	}
 	
+	/**
+	 * Metodi joka palauttaa tiedon siitä onko 
+	 * pelaaja keskeyttänyt pelin
+	 * @return
+	 */
 	public boolean onkoKeskeyttanyt(){
 		return pelinKeskeytys;
 	}

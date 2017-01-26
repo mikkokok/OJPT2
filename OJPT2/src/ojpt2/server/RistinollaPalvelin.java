@@ -138,7 +138,6 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				peli.getPelaaja2().voitto();
 				peli.getPelaaja1().havio();
 				peli.pelinTila = PelinTila.PELI_OHI; 
-
 			}
 			else if(peli.isWin().equals("X")){
 				System.out.println("Pelaaja1 voitti pelin");

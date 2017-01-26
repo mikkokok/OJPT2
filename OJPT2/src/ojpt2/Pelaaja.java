@@ -209,6 +209,8 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 				e.printStackTrace();
 			}
 			
+			//Jos pelaaja on keskeytt‰nyt pelin niin pyydet‰‰n 
+			//palvelinta poistamaan peli
 			if(gui.onkoKeskeyttanyt()){
 				ristinollaPalvelin.keskeytaPeli(peliID);
 			}
