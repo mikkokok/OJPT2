@@ -279,7 +279,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 	 */
 	public void aloitaPeli(){
 		peliKaynnissa = true;
-		run();
+		this.run();
 	}
 	
 	/**
@@ -301,7 +301,7 @@ public class TicTacToeLogic extends UnicastRemoteObject implements Runnable {
 				ristinollaPalvelin.paivitaPelia(this);
 			} catch (RemoteException e) {
 				e.printStackTrace();
-
+				peliKaynnissa = false;
 			}
 		}
 		

@@ -19,6 +19,7 @@ public interface PelaajaIF extends Remote {
 	void havio() throws RemoteException;
 	void tasapeli() throws RemoteException;
 	int getPeliID() throws RemoteException;
+	void setPeliID(int peliID) throws RemoteException;
 	void vastaanOtaPeliTilanne(String[][] peliTilanne) throws RemoteException;
 	String[][] lahetaViimeisinSiirtoni()throws RemoteException;
 	void poistu() throws RemoteException;

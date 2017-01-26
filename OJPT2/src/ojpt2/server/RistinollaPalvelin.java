@@ -3,7 +3,6 @@ package ojpt2.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import ojpt2.Pelaaja.VuoroTilanne;
 import ojpt2.PelaajaIF;
@@ -36,6 +35,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	@Override
 	public void rekisteroiPelaaja(PelaajaIF pelaaja) throws RemoteException {
 		kaikkiPelaajat.put(pelaajaID, pelaaja);
+		System.out.println("Pelaajan rekisteröinti onnistui. Pelaajan ID on: " + pelaajaID);
 		pelaajaID++;
 	}
 
@@ -52,18 +52,17 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	/**
 	 * Metodi joka palauttaa pelin annetun peliID:n mukaan
 	 */
-	public TicTacToeLogic getPeli(int peliID) throws RemoteException {
-		
-		TicTacToeLogic peli = null;
-		
-		for (Map.Entry<Integer, TicTacToeLogic> entry : kaikkiPelit.entrySet()) {
-			int avain = entry.getKey();
-			
-			if(avain == peliID){
-				peli = entry.getValue();
-			}
-		}
-		return peli;
+	public TicTacToeLogic getPeli(int peliID) throws RemoteException {		
+		return kaikkiPelit.get(peliID);	
+	}
+	
+	private int getPelinID(TicTacToeLogic peli){
+	     for (int peliID : kaikkiPelit.keySet()) {
+             if (kaikkiPelit.get(peliID).equals(peli)) {
+               return peliID;
+             }
+           }
+		return 0;
 	}
 	
 	/**
@@ -78,34 +77,27 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	 *Metodi joka liittää pelaajan viimeisimpään peliin
 	 */
 	@Override
-	public int liityPeliin(PelaajaIF pelaaja) throws RemoteException {
+	public void liityPeliin(PelaajaIF pelaaja) throws RemoteException {
 		
-		int peliID = kaikkiPelit.size() - 1;
-		TicTacToeLogic peli = kaikkiPelit.get(peliID);
+		//uusinPeliID = kaikkiPelit.size() - 1;
+		TicTacToeLogic peli = kaikkiPelit.get(this.peliID);
 				
 		//Jos pelissä ei ole kahta pelaajaa niin pelaaja voidaan lisätä peliin
 		if(peli.getPelaajienMaara() < 2){ 
 			peli.lisaaPelaaja(pelaaja);
 			
-			//Jos pelaajan lisäämisen jälkeen pelissä on yksi pelaajaa niin
-			//asetetaan pelin tila odottamaan toista pelaajaa
-			if(peli.getPelaajienMaara() == 1){
-				peli.pelinTila = PelinTila.ODOTETAAN_TOISTA_PELAAJAA;
-			}
-			
+			System.out.println("Pelaaja kuuluu peliin: " + peliID);
+		
 			//Jos pelaajan lisäämisen jälkeen pelissä on kaksi pelaajaa niin peli voidaan
 			//aloittaa ja luodaan samalla uusi tyhjä pelihuone
-			else if(peli.getPelaajienMaara() == 2){
+			if(peli.getPelaajienMaara() == 2){
 				luoUusiPeli();
 				aloitaPeli(peli);					
 			}
-			
-			return peliID;
 		}
 		else{
 			System.out.println("Peliin ei voi liittyä koska se on täynnä. Luodaan uusi pelihuone ja yritä uudelleen");
 			luoUusiPeli();
-			return 0;
 		}
 	}
 
@@ -115,8 +107,9 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	@Override
 	public void tarkistaVoitto(int peliID, int maxSiirrot) throws RemoteException {
 		
-		TicTacToeLogic peli = this.getPeli(peliID);
-
+		System.out.println("Tarkistetaan pelin: " + peliID + " tilanne.");
+		TicTacToeLogic peli = getPeli(peliID);		
+		
 		//Mikäli voittaja löytyy niin lähetetään pelaajille tieto siitä
 		//kumpi voitti ja asetetaan pelin tila päättyneeksi
 		if(peli.aloittikoPelaaja1()){
@@ -163,14 +156,24 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 
 	}
 	
+	
+	public void keskeytaPeli(int peliID) throws RemoteException{
+		TicTacToeLogic peli = kaikkiPelit.get(peliID);
+		peli.lopetaPeli();
+		kaikkiPelit.put(peliID++, new TicTacToeLogic(this));
+	}
+	
 	/**
-	 * Metodi joka poistaa palvelimen muistista
+	 * Metodi joka poistaa pelin palvelimen muistista ja 
+	 * lopettaa pelaajien toiminnan
 	 */
 	@Override
 	public void poistaPeli(TicTacToeLogic peli) throws RemoteException {
-		kaikkiPelaajat.remove(peli.getPelaaja1());
-		kaikkiPelaajat.remove(peli.getPelaaja2());
-		kaikkiPelit.remove(peli);
+		kaikkiPelaajat.values().remove(peli.getPelaaja1());
+		kaikkiPelaajat.values().remove(peli.getPelaaja2());
+		peli.getPelaaja1().poistu();
+		peli.getPelaaja2().poistu();	
+		kaikkiPelit.values().remove(peli);
 	}
 
 	/**
@@ -179,11 +182,14 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 	 */
 	@Override
 	public void paivitaPelia(TicTacToeLogic peli) throws RemoteException {
-			
+		
 		//Pelin aloitus tilassa arvotaan kumpi pelaaja saa aloitusvuoron ja 
 		//sen jälkeen peli voidaan todella käynnistää
 		if(peli.getPelinTila() == PelinTila.PELIN_ALOITUS){
 				
+			peli.getPelaaja1().setPeliID(getPelinID(peli));
+			peli.getPelaaja2().setPeliID(getPelinID(peli));
+			
 			Random random = new Random();		
 			int aloitusVuoro = random.nextInt(2);
 				
@@ -275,7 +281,7 @@ public class RistinollaPalvelin extends UnicastRemoteObject implements Ristinoll
 				
 		}	
 		
-		//Peli ohi - tilassa pyydetää peliä sulkemaan itsensä
+		//Peli ohi - tilassa pyydetään peliä sulkemaan itsensä
 		else if(peli.getPelinTila() == PelinTila.PELI_OHI){
 			peli.lopetaPeli();
 		}

@@ -17,6 +17,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	private String[][] peliTilanne; //Muuttuja, joka ottaa palvelimelta vastaan pelin tilanteen
 	private boolean vuoroKesken;
 	private boolean voiPaivittaa = false; // Muuttuja joka m‰‰ritt‰‰ voiko pelaajan k‰yttˆliittym‰‰ muokata
+	private Thread pelaajaSaie;
 	
 	//Pelaajan mahdolliset tilanteet vuorojen jaossa
 	public enum VuoroTilanne{
@@ -40,10 +41,10 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 		pelaakoViela = true;
 		vuoroKesken = false;
 		vuoroTilanne = VuoroTilanne.VUOROJA_EI_JAETTU;
-		Thread pelaajaSaie = new Thread(this);
+		pelaajaSaie = new Thread(this);
 		pelaajaSaie.start();
 		ristinollaPalvelin.rekisteroiPelaaja(this);
-		peliID = ristinollaPalvelin.liityPeliin(this);
+		ristinollaPalvelin.liityPeliin(this);
 	}
 	
 	/**
@@ -67,10 +68,18 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
-			
+			}	
 		}
-		System.exit(1);	
+		
+		gui.UpdateTextArea("Suljetaan peli...");
+		
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		System.exit(1);
 	}
 	
 	/**
@@ -112,8 +121,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	@Override
 	public void voitto() throws RemoteException {
 		gui.UpdateTextArea("Voitit pelin.");
-		vuoroKesken = false;
-		voiPaivittaa = false;
+		poistu();
 	}
 	
 	/**
@@ -122,8 +130,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	@Override
 	public void havio() throws RemoteException{
 		gui.UpdateTextArea("H‰visit pelin.");
-		vuoroKesken = false;
-		voiPaivittaa = false;
+		poistu();
 	}
 	
 	/**
@@ -132,8 +139,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	@Override
 	public void tasapeli() throws RemoteException{
 		gui.UpdateTextArea("Tasapeli");
-		vuoroKesken = false;
-		voiPaivittaa = false;
+		poistu();
 	}
 
 	/**
@@ -142,6 +148,9 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	 */
 	@Override
 	public void poistu() throws RemoteException {
+		gui.UpdateTextAreab("Peli P‰‰ttyi");
+		vuoroKesken = false;
+		voiPaivittaa = false;
 		pelaakoViela = false;		
 	}
 
@@ -162,6 +171,15 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	}
 	
 	/**
+	 * Metodi joka asettaa pelaajalle peliID:n, 
+	 * joka kertoo mihin peliin pelaaja kuuluu
+	 */
+	@Override
+	public void setPeliID(int peliID) throws RemoteException{
+		this.peliID = peliID;
+	}
+	
+	/**
 	 * Metodi joka palauttaa pelaajan tilanteen omasta vuorostaan
 	 */
 	@Override
@@ -174,14 +192,13 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	 */
 	@Override
 	public void paivitaGUI() throws RemoteException {
-		//gui.UpdateTextAreab(vuoroTilanne.toString());
 		
 		//Tehd‰‰n vastustajan siirto pelaajan omaan GUI:hin
 		gui.teeVastustajanSiirto(peliTilanne); 
 		
 		//Pyydet‰‰n palvelinta tarkistamaan onko peli voitettu
 		ristinollaPalvelin.tarkistaVoitto(peliID, gui.getSiirtojenMaara());
-			
+		
 		//Silmukka, joka pyˆrii niin kauan kunnes pelaaja on tenyt siirtonsa
 		while(vuoroKesken){
 			
@@ -192,13 +209,17 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 				e.printStackTrace();
 			}
 			
+			if(gui.onkoKeskeyttanyt()){
+				ristinollaPalvelin.keskeytaPeli(peliID);
+			}
 			//Kun pelaaja on tehnyt siirtonsa,
 			//niin asetetaan oma vuoro p‰‰ttyneeksi
 			if(gui.getviimeisinSiirto() != null){
 				vuoroKesken = false;
 				vuoroTilanne = VuoroTilanne.VASTUSTAJAN_VUORO;
 				voiPaivittaa = false;
-			}	
+			}
+			
 		}
 	}
 	
@@ -206,8 +227,7 @@ public class Pelaaja extends UnicastRemoteObject implements PelaajaIF, Runnable{
 	 * Metodi joka vastaanottaa palvelimelta pelin senhetkisen tilanteen ja
 	 * resetoidaan samalla pelaajan oma viimeisin siirto. Lopuksi kerrotaan
 	 * ett‰ GUI:ta voidaan nyt p‰ivitt‰‰
-	 */
-	
+	 */	
 	@Override
 	public void vastaanOtaPeliTilanne(String[][] peliTilanne) throws RemoteException {
 		this.peliTilanne = peliTilanne;

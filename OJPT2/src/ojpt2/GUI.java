@@ -38,6 +38,7 @@ public class GUI extends Thread {
 	private JButton[][] painikkeet;
 	private boolean[][] klikatutPainikkeet;
 	private String[][] viimeisinSiirto;
+	private boolean pelinKeskeytys = false;
 
 	public GUI () {
 		this.window = new JFrame("Ristinolla");
@@ -47,13 +48,14 @@ public class GUI extends Thread {
 		this.window.setBackground(Color.BLUE);
 		this.window.setTitle("Ristinolla");
 		this.window.setLocationRelativeTo(null);
-		this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.window.setVisible(true);
 		this.window.setResizable(false);
 		this.window.setLayout(manager);
 		this.window.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		this.manager.setHgap(5);
 		this.manager.setVgap(5);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		painikkeet = new JButton[3][3];
 		klikatutPainikkeet = new boolean[3][3];
@@ -238,10 +240,10 @@ public class GUI extends Thread {
 		});
 		buttonextraa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pelinKeskeytys = true;
+				viimeisinSiirto = new String[3][3];
 				if (debug)
 					System.err.println("Stopping GUI");
-				System.exit(1);
-
 			}          
 		});
 	}
@@ -356,5 +358,9 @@ public class GUI extends Thread {
 	 */
 	public int getSiirtojenMaara(){
 		return buttoncount;
+	}
+	
+	public boolean onkoKeskeyttanyt(){
+		return pelinKeskeytys;
 	}
 }
