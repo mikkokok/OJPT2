@@ -1,1 +1,1 @@
-# OJPT2
+# Hajautetut ohjelmistot ja pilvipalvelut kurssin toinen harjoitustyö
