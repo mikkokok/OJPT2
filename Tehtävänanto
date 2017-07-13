@@ -1,0 +1,17 @@
+Toisessa harjoitustyössä harjoitellaan etäkutsujen tekemistä toteuttamalla vähintään kahden pelaajan
+verkon yli pelattava moninpeli. Työssä tulee hyödyntää Javaan sisältyvää RMI:tä tai jotain toista
+etäkutsutekniikkaa (esim. RPC, ohjelmointikieli vapaa). Työssä on siis tarkoitus käyttää
+etäkutsuja, ei soketteja. Aiheeksi kannattaa valita jokin kohtuullisen yksinkertainen peli (ristinolla,
+korttipelit, laivanupotus, jatsi, ...).
+Sovelluksen osapuolten tehtävät voivat olla esimerkiksi seuraavanlaisia:
+
+Palvelin
+• Ylläpitää pelin tilaa
+• Muodostaa uuden peli-instanssin, kun vaadittu määrä pelaajia on ilmoittautunut peliin
+• Mahdollistaa usean samanaikaisen peli-instanssin käynnissä olon
+• Jakaa pelivuorot
+• Lähettää tietoa pelin tilasta asiakkaille (tai asiakas voi kysyä tilaa vuoron saatuaan)
+
+Asiakas
+• Tarjoaa pelaajalle käyttöliittymän (komentorivi tai graafinen)
+• Välittää tietoa pelaajan valinnoista palvelimelle (esimerkiksi etäkutsun tuloksena)
